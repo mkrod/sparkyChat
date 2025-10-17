@@ -6,6 +6,8 @@ import Landing from './pages/onboard/land'
 import NotFound from './pages/404'
 import AuthLayout from './layouts/auth_layout'
 import Auth from './pages/auth/auth'
+import AppLayout from './layouts/app_layout'
+import AppHome from './pages/app'
 
 const App: FC = (): JSX.Element => {
 
@@ -18,6 +20,11 @@ const App: FC = (): JSX.Element => {
 
         <Route path='auth' element={<AuthLayout />}>
           <Route index element={<Auth />} />
+        </Route>
+
+        <Route path='app' element={<AppLayout />}>
+          <Route index element={<AppHome />} />
+
         </Route>
       </Route>
     )

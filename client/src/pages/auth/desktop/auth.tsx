@@ -1,6 +1,7 @@
 import { type FC, type JSX } from 'react';
 import { AppLogo, Appname } from '@/constants';
 import { FcGoogle } from 'react-icons/fc';
+import { googleAuth } from '@/constants/auth';
 
 const DesktopAuth :FC = ():JSX.Element => {
 
@@ -18,7 +19,7 @@ const DesktopAuth :FC = ():JSX.Element => {
             <h2>Sign in into your account</h2>
 
             <div className='auth_signin_options_container'>
-                <button className='auth_signin_options'>
+                <button onClick={googleAuth} className='auth_signin_options'>
                     <FcGoogle size={20}/>
                     <span>Continue with google</span>
                 </button>

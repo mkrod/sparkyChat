@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 /////////// Routes imports ///////////
 
 import authRoutes from "./routes/auth.routes.js";
+import sessionRoutes from "./routes/session.routes.js";
 
 
 ///////////////////////////////////////
@@ -26,7 +27,7 @@ import sessionMiddleware from "./utilities/session/index.js";
 
 app.use(sessionMiddleware);
 app.use(cors({
-    origin: process.env.CLIENT,
+    origin: process.env.CLIENT_URL,
     credentials: true,
 }));
 app.use(express.json());
@@ -48,6 +49,7 @@ wsConfig(server);
 //////////////////////routes///////////////////////////
 
 app.use("/api/auth", authRoutes);
+app.use("/api/session", sessionRoutes);
 
 app.get("/", (_, res) => {
     res.header("Access-Control-Allow-Credentials", "true");
