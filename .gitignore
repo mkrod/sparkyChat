@@ -15,6 +15,7 @@ pnpm-debug.log*
 *.log
 client/.env
 server/.env
+server/utility/google.json
 
 # Logs
 client/logs
