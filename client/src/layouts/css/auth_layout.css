@@ -1,0 +1,43 @@
+.auth_layout_container{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    gap: 2rem;
+}
+
+.mobile_auth_layout_container{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.auth_layout_content_container{
+    display: flex;
+    min-width: 350px;
+    width: 35%;
+    height: 100%;
+    padding: 3.5rem 3.5rem 3.5rem 0;
+}
+
+.auth_layout_shared_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    background: radial-gradient(circle at top left, var(--accent1), var(--accent2));
+    border-radius: 0.5rem 0 0 0.5rem;
+    width: 65%;
+    padding: 3.5rem;
+}
+
+.auth_layout_shared_header_text_container{
+    font-size: 2rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth_layout_shared_desc_text_container{
+    font-size: 0.8rem;
+}

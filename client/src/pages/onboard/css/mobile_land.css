@@ -1,0 +1,122 @@
+.mobile_land_container{
+    display: flex;
+    flex-direction: column;
+    background: url('../../../../public/world.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: repeat;
+}
+
+.mobile_land_header{
+    height: 5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+    align-items: center;
+    padding: 0 2rem 0 0.5rem;
+    border-bottom: 0.5px solid #ffffff25;
+    backdrop-filter: blur(15px);
+}
+
+.mobile_land_header_left{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.mobile_land_header_right{
+    margin-left: auto;
+}
+
+.mobile_land_content_container{
+    min-height: 100dvh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile_land_navbar_container{
+    position: fixed;
+    top: 0;
+    left: 0; right: 0;
+    height: fit-content;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    scale: 0;
+    opacity: 0;
+}
+
+.mobile_land_navbar_container.show{
+    scale: 1;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.mobile_land_navbar_links{
+    margin-top: 1rem;
+}
+
+.mobile_land_navbar_link{
+    height: 3rem;
+    display: flex;
+    align-items: center;
+}
+
+.mobile_land_navbar_link:hover{
+    color: var(--accent1);
+    cursor: pointer;
+}
+
+.mobile_land_content_first{
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+    font-size: 2rem;
+}
+
+.mobile_land_content_second{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.mobile_land_content_img_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1.2rem;
+    padding: 0.1rem;
+    width: fit-content;
+    height: fit-content;
+    overflow: hidden;
+}
+
+
+.mobile_land_content_img_container.wide{
+    background: linear-gradient(to right, var(--accent1), var(--accent2));
+}
+
+.mobile_land_content_img_container.normal{
+    background: linear-gradient(45deg, green, blue, var(--accent1), var(--accent2));
+}
+
+
+.mobile_land_content_img{
+    border-radius: 1.2rem;
+}
+
+.mobile_land_content_third{
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    padding: 2rem 2rem;
+    text-align: center;
+}

@@ -1,0 +1,69 @@
+import express from "express";
+import https from "https";
+import fs from "fs";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+
+/////////// Routes imports ///////////
+
+import authRoutes from "./routes/auth.routes.js";
+
+
+///////////////////////////////////////
+///////////////////////////////////////
+///////////////////////////////////////
+
+dotenv.config();
+
+const PORT = process.env.PORT || 3000;
+const app = express();
+
+
+
+import sessionMiddleware from "./utilities/session/index.js";
+
+
+app.use(sessionMiddleware);
+app.use(cors({
+    origin: process.env.CLIENT,
+    credentials: true,
+}));
+app.use(express.json());
+
+app.use(cookieParser());
+
+//ssl
+const sslOptions = {
+    key: fs.readFileSync("./keys/server.key"),
+    cert: fs.readFileSync("./keys/server.cert"),
+};
+
+const server = https.createServer(sslOptions, app);
+
+import wsConfig from "./utilities/websocket/ws_conn.js";
+wsConfig(server);
+////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////
+//////////////////////routes///////////////////////////
+
+app.use("/api/auth", authRoutes);
+
+app.get("/", (_, res) => {
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.send("Hello, World!");
+});
+//////////////////////////////////////
+//error handling
+process.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception: ", err);
+});
+process.on("unhandledRejection", (err) => {
+    console.error("unhandled Rejection: ", err);
+});
+process.on("uncaughtExceptionMonitor", (err) => {
+    console.error("Uncaught Exception Monitor: ", err);
+});
+
+//Start the server
+server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
