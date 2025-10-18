@@ -8,6 +8,7 @@ import AuthLayout from './layouts/auth_layout'
 import Auth from './pages/auth/auth'
 import AppLayout from './layouts/app_layout'
 import AppHome from './pages/app'
+import { ConnectionProvider } from './constants/conn_provider'
 
 const App: FC = (): JSX.Element => {
 
@@ -31,7 +32,9 @@ const App: FC = (): JSX.Element => {
   )
   return (
     <ChatProvider>
-      <RouterProvider router={router} />
+      <ConnectionProvider>
+       <RouterProvider router={router} />
+      </ConnectionProvider>
     </ChatProvider>
   )
 }

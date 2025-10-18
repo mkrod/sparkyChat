@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, type FC } from 'react'
-import type { colorScheme } from './types';
+import { createContext, useContext, useEffect, useState, type Dispatch, type FC, type SetStateAction } from 'react'
+import type { colorScheme, Scheme } from './types';
 import { colors } from './vars';
 
 
@@ -13,6 +13,9 @@ interface ChatContextType {
     isMobile: boolean;
     activity: boolean;
     setActivity: React.Dispatch<React.SetStateAction<boolean>>;
+    userScheme: Scheme;
+    setUserScheme: Dispatch<SetStateAction<Scheme>>;
+    switchScheme: () => void;
 }
 
 
@@ -24,16 +27,33 @@ interface ChatProviderProps {
 export const ChatProvider : FC<ChatProviderProps> = ({ children }) => {
 
     // Detect system color scheme preference
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    //console.log(media)
-    const scheme = media.matches ? "dark" : "light";
-    const [activeColor, setActiveColor] = useState<colorScheme>(colors[scheme] || colors[0]); // Default to the first color scheme
-    media.onchange = (e) => {
-        //console.log("Media ChangedL: ", e);
-        const newScheme = e.matches ? "dark" : "light";
-        setActiveColor(colors[newScheme] || colors[0]);
-    };
+    const [schemeChanged, setSchemechange] = useState<boolean>(true);
 
+    const [userScheme, setUserScheme] = useState<Scheme>("light");
+
+    const [activeColor, setActiveColor] = useState<colorScheme>(colors[userScheme] || colors[0]); // Default to the first color scheme
+
+    useEffect(() => {
+        if(!schemeChanged) return;
+        const media = window.matchMedia('(prefers-color-scheme: dark)');
+        const scheme: Scheme = media.matches ? "dark" : "light";
+        const preferredScheme: Scheme = (localStorage.getItem("scheme") as Scheme)||scheme;
+        setUserScheme(preferredScheme);
+        console.log(preferredScheme)
+        setActiveColor(colors[preferredScheme])
+        setSchemechange(false);
+    }, [schemeChanged])
+
+
+
+
+    const switchScheme = () => {
+        const oldScheme = localStorage.getItem("scheme") as Scheme;
+        const newScheme = oldScheme === "dark" ? "light" : "dark";
+        localStorage.setItem("scheme", newScheme);
+        setSchemechange(true);
+        setUserScheme(newScheme);
+    }
     /////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////
     ///// Responsiveness Settings ///////////////////////////////////
@@ -55,7 +75,10 @@ export const ChatProvider : FC<ChatProviderProps> = ({ children }) => {
         activeColor,
         isMobile,
         activity,
-        setActivity
+        setActivity,
+        userScheme,
+        setUserScheme,
+        switchScheme
     }}>
         { children }
     </ChatContext.Provider>

@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 
 import authRoutes from "./routes/auth.routes.js";
 import sessionRoutes from "./routes/session.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 
 ///////////////////////////////////////
@@ -50,6 +51,7 @@ wsConfig(server);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/session", sessionRoutes);
+app.use("/api/user", userRoutes);
 
 app.get("/", (_, res) => {
     res.header("Access-Control-Allow-Credentials", "true");

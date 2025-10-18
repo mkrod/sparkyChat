@@ -1,8 +1,34 @@
-import { type FC, type JSX } from 'react'
+import { useChatProvider } from '@/constants/chatProvider'
+import { type FC, type JSX } from 'react';
+import "./css/index.css";
+import "./css/mobile_index.css";
+import DesktopChatList from './desktop/chat_list';
+import InChatLayout from '@/layouts/in_chat_layout';
 
 const AppHome: FC = (): JSX.Element => {
-  return (
-    <div>AppHome</div>
+
+  const { isMobile, activeColor } = useChatProvider();
+
+  return !isMobile ? (
+    <div className='app_home_container'>
+      <div className='app_home_header_container'>
+        <span style={{color:activeColor.textFade}} className='app_home_header_text'>Chat</span>
+        <button className='app_home_header_button'>New Message</button>
+      </div>
+
+      <div className='app_home_content_container'>
+        <div className="app_home_chat_list_container">
+          <DesktopChatList />
+        </div>
+        <div className="app_home_in_chat_container">
+          <InChatLayout /> {/** for stuffs like in chat ui, user profile, etc (call UI will be a popup overlay and maybe the user details too for simplicity) */}
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div>
+      Mobile View {/** Active Page in Navbar here */}
+    </div>
   )
 }
 

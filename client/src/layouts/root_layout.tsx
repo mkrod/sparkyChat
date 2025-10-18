@@ -24,7 +24,9 @@ const RootLayout:FC = ():JSX.Element => {
     .catch((err: Error) => {
       console.log("Error checking session: ", err);
     })
-    .finally(() => setActivity(false));
+    .finally(() => {
+      setTimeout(() => setActivity(false), 1000);
+    });
   }, []);
 
   ///////////////////////////
