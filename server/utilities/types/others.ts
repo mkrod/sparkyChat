@@ -4,6 +4,6 @@ interface CustomResponse {
     data?: any | undefined;
 }
 
+type SocketID = { socket_id: string };
 
-
-export type { CustomResponse }
+export type { CustomResponse, SocketID }

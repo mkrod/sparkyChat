@@ -1,0 +1,129 @@
+import { useEffect, useState, type FC, type JSX, type ReactNode } from 'react';
+import "./css/messageListCard.css";
+import type { Message, MessageList, Presence } from '@/constants/types';
+import { formatDate } from '@/constants/vars';
+import { MdOutlineImage } from 'react-icons/md';
+import { IoIosDocument, IoIosVideocam } from 'react-icons/io';
+import { AiFillAudio } from 'react-icons/ai';
+import { useChatProvider } from '@/constants/providers/chatProvider';
+import { useDataProvider } from '@/constants/providers/data_provider';
+import { useConnProvider } from '@/constants/providers/conn_provider';
+import { IoCheckmark, IoCheckmarkDone } from 'react-icons/io5';
+
+interface Props {
+    data: MessageList;
+}
+
+const MessageListcard: FC<Props> = ({ data }): JSX.Element => {
+
+    const { activeColor } = useChatProvider();
+    const { presence } = useDataProvider();
+    const { user } = useConnProvider();
+
+    const name: string = data.otherPartyData.name.first + " " + data.otherPartyData.name.last;
+
+    const presenceColor = {
+        online: '#4caf50',
+        offline: '#999999',
+        away: '#ff9800',
+        busy: '#f44336',
+    }
+    const statusIcon: Record<Message['status'], ReactNode> = {
+        sent: <IoCheckmark style={{ color: "#999999" }} />,
+        delivered: <IoCheckmarkDone style={{ color: "#999999" }} />,
+        read: <IoCheckmarkDone style={{ color: '#4caf50' }} />,
+    }
+    const [userPresence, setUserPresence] = useState<Presence['status']>("offline");
+
+    useEffect(() => {
+        const userPresence : Presence | undefined = presence.find((p) => p.user_id === data.otherPartyData.user_id);
+
+        if(!userPresence) {
+            setUserPresence("offline");
+            return;
+        }
+        setUserPresence(userPresence.status);
+    }, [presence]);
+
+    ////////////////////////////
+    const time: string = formatDate(data.lastTimestamp);
+    const returnMessageTypeAsIcon = (type: Message['type']): ReactNode|null => {
+        switch(type) {
+            case "image":
+                return <MdOutlineImage />;
+            case "video":
+                return <IoIosVideocam />;
+            case "text":
+                return null;
+            case "audio":
+                return <AiFillAudio />;
+            case "file":
+                return <IoIosDocument />;
+            default:
+                return null;
+        }
+    }
+
+    const returnMessageTypeAsText = (type: Message['type'], text: string): string => {
+        switch(type) {
+            case "image":
+                return "Photo";
+            case "video":
+                return "Video";
+            case "audio":
+                return "Audio";
+            case "file":
+                return "File";
+            default:
+                return text;
+        }
+    }
+
+    /////////////  typing
+    const [typing, _] = useState<boolean>(false);
+  return (
+    <div style={{ borderColor: activeColor.fadedBorder  }} className='message_list_card_container'>
+        <div className="message_list_card_image_container">
+            <img src={data.otherPartyData.picture} className='message_list_card_image' />
+            <div 
+                style={{ backgroundColor: presenceColor[userPresence] }}
+                className="message_list_card_presence_indicator">
+            </div>
+        </div>
+        <div className="message_list_card_content_name_container">
+            <div className="message_list_card_content_user_name_container">
+                <span className='message_list_card_content_user_name'>{ name.length > 15 ? `${name.slice(0, 16)}...` : name }</span>
+            </div>
+            {typing ? 
+            (<div className='message_list_card_content_typing_container'>
+                Typing...
+            </div>) 
+            : 
+            (<div className="message_list_card_content_container">
+                { data.lastSenderId === user.user_id ? (
+                <div className="message_list_card_content_message_status_icon_container">
+                    {statusIcon[data.lastMessageStatus] }
+                </div>): ""}
+                {returnMessageTypeAsIcon(data.lastMessageType)} {/* for icon rendering if its image, video, etc */}
+                <span 
+                    style={{ color: activeColor.textFadeSecondary }}
+                    className='message_list_card_content_last_message'>
+                        {returnMessageTypeAsText(data.lastMessageType, data.lastMessage)}
+                </span>
+            </div>)}
+        </div>
+        <div className="message_list_card_meta_container">
+            <span 
+                style={{ color: activeColor.textFadeSecondary }}
+                className='message_list_card_meta_timestamp'>
+                { time }
+            </span>
+            <div className="message_list_card_meta_unread_count_container">
+                <span className='message_list_card_meta_unread_count'>{ data.unreadCount }</span>
+            </div>
+        </div>
+    </div>
+  )
+}
+
+export default MessageListcard

@@ -1,14 +1,14 @@
 import type { FC, JSX } from 'react'
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router'
 import RootLayout from './layouts/root_layout'
-import { ChatProvider } from './constants/chatProvider'
+import { ChatProvider } from './constants/providers/chatProvider'
 import Landing from './pages/onboard/land'
 import NotFound from './pages/404'
 import AuthLayout from './layouts/auth_layout'
 import Auth from './pages/auth/auth'
 import AppLayout from './layouts/app_layout'
 import AppHome from './pages/app'
-import { ConnectionProvider } from './constants/conn_provider'
+import { DataProvider } from './constants/providers/data_provider'
 
 const App: FC = (): JSX.Element => {
 
@@ -31,11 +31,11 @@ const App: FC = (): JSX.Element => {
     )
   )
   return (
-    <ChatProvider>
-      <ConnectionProvider>
-       <RouterProvider router={router} />
-      </ConnectionProvider>
-    </ChatProvider>
+      <DataProvider> {/* Moved Connection provider to wrap just app layout cause connection is only needed when user is in */}
+        <ChatProvider>
+          <RouterProvider router={router} />
+        </ChatProvider>
+      </DataProvider>
   )
 }
 

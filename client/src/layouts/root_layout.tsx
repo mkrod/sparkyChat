@@ -1,5 +1,5 @@
 import ActivityIndicator from '@/components/utility/activity_indicator';
-import { useChatProvider } from '@/constants/chatProvider'
+import { useChatProvider } from '@/constants/providers/chatProvider'
 import {useEffect, type FC, type JSX} from 'react'
 import { Outlet, useNavigate, type NavigateFunction } from 'react-router';
 import "./css/root_layout.css";

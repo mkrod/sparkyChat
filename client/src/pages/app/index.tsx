@@ -1,4 +1,4 @@
-import { useChatProvider } from '@/constants/chatProvider'
+import { useChatProvider } from '@/constants/providers/chatProvider'
 import { type FC, type JSX } from 'react';
 import "./css/index.css";
 import "./css/mobile_index.css";

@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 
+
 /////////// Routes imports ///////////
 
 import authRoutes from "./routes/auth.routes.js";
@@ -14,8 +15,12 @@ import userRoutes from "./routes/user.routes.js";
 
 ///////////////////////////////////////
 ///////////////////////////////////////
-///////////////////////////////////////
+///////////////custom ware////////////////////////
+import wsConfig from "./utilities/websocket/ws_conn.js";
+import sessionMiddleware from "./utilities/session/index.js";
 
+
+///////////////////////////////////////////////////////
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
@@ -23,7 +28,7 @@ const app = express();
 
 
 
-import sessionMiddleware from "./utilities/session/index.js";
+
 
 
 app.use(sessionMiddleware);
@@ -43,7 +48,7 @@ const sslOptions = {
 
 const server = https.createServer(sslOptions, app);
 
-import wsConfig from "./utilities/websocket/ws_conn.js";
+
 wsConfig(server);
 ////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////

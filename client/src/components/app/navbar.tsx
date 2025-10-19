@@ -1,17 +1,19 @@
 import { AppLogo, Appname } from '@/constants'
-import { type FC, type JSX } from 'react'
+import { useState, type FC, type JSX } from 'react'
 import "./css/navbar.css";
-import { useConnProvider } from '@/constants/conn_provider';
+import { useConnProvider } from '@/constants/providers/conn_provider';
 import { IoCallOutline } from 'react-icons/io5';
 import { TbMessage2 } from 'react-icons/tb';
 import { LuBell, LuSettings2 } from 'react-icons/lu';
 import { RxUpdate } from 'react-icons/rx';
 import { BiExit } from 'react-icons/bi';
-import { useChatProvider } from '@/constants/chatProvider';
+import { useChatProvider } from '@/constants/providers/chatProvider';
+import ActivityIndicator from '../utility/activity_indicator';
 
 const DesktopNavbar: FC = (): JSX.Element => {
     const { user } = useConnProvider();
     const { activeColor, userScheme, switchScheme } = useChatProvider();
+    const [dpIsLoading, setDpIsLoading] =  useState<boolean>(true);
 
 
   return (
@@ -31,7 +33,16 @@ const DesktopNavbar: FC = (): JSX.Element => {
             <div className="app_navbar_user_content_container">
 
                 <div className="app_navbar_user_picture_container">
-                    <img src={user.picture} className='app_navbar_user_picture' />
+                    {dpIsLoading && (
+                        <div style={{background:activeColor.fadeBackground}} className='app_nav_header_img_skeleton'>
+                            <ActivityIndicator 
+                            size='small'
+                            style='spin'
+                            color='var(--app-accent)'
+                            />
+                        </div>
+                    )}
+                    <img onLoad={() => setTimeout(() => setDpIsLoading(false), 2000)} src={user.picture} className='app_navbar_user_picture' />
                 </div>
                 <div className='app_navbar_user_details_container'>
                     <div className='app_navbar_user_details_names'>
@@ -59,7 +70,7 @@ const DesktopNavbar: FC = (): JSX.Element => {
         <div className="app_navbar_links_container">
             <div className="app_navbar_link_container">
                 <div className='app_navbar_link_icon_container'>
-                    <TbMessage2 />
+                    <TbMessage2 color='green' />
                 </div>
                 <div className='app_navbar_link_label_container'>
                     <span className='app_navbar_label'>Chats</span>
@@ -68,7 +79,7 @@ const DesktopNavbar: FC = (): JSX.Element => {
             </div>
             <div className="app_navbar_link_container">
                 <div className='app_navbar_link_icon_container'>
-                    <RxUpdate />
+                    <RxUpdate color='blue' />
                 </div>
                 <div className='app_navbar_link_label_container'>
                     <span className='app_navbar_label'>Status</span>
@@ -77,7 +88,7 @@ const DesktopNavbar: FC = (): JSX.Element => {
             </div>
             <div className="app_navbar_link_container">
                 <div className='app_navbar_link_icon_container'>
-                    <IoCallOutline />
+                    <IoCallOutline color='#940063' />
                 </div>
                 <div className='app_navbar_link_label_container'>
                     <span className='app_navbar_label'>Calls</span>
@@ -86,7 +97,7 @@ const DesktopNavbar: FC = (): JSX.Element => {
             </div>
             <div className="app_navbar_link_container">
                 <div className='app_navbar_link_icon_container'>
-                    <LuSettings2 />
+                    <LuSettings2 color='#6400a7' />
                 </div>
                 <div className='app_navbar_link_label_container'>
                     <span className='app_navbar_label'>Settings</span>
@@ -111,7 +122,7 @@ const DesktopNavbar: FC = (): JSX.Element => {
 
             <div className="app_navbar_link_container">
                 <div className='app_navbar_link_icon_container'>
-                    <BiExit />
+                    <BiExit color='red' />
                 </div>
                 <div className='app_navbar_link_label_container'>
                     <span className='app_navbar_label'>Logout</span>

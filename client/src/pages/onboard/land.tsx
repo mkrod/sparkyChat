@@ -1,7 +1,7 @@
 import type { FC, JSX } from 'react'
 import "./css/land.css";
 import "./css/mobile_land.css"
-import { useChatProvider } from '@/constants/chatProvider';
+import { useChatProvider } from '@/constants/providers/chatProvider';
 import DesktopLand from './desktop/land';
 import MobileLand from './mobile/land';
 

@@ -1,6 +1,6 @@
 import type { FC, JSX } from 'react'
 import { AppLogo, Appname } from '@/constants'
-import { useChatProvider } from '@/constants/chatProvider';
+import { useChatProvider } from '@/constants/providers/chatProvider';
 import { MdOutlineTouchApp } from 'react-icons/md';
 import { useNavigate, type NavigateFunction } from 'react-router';
 

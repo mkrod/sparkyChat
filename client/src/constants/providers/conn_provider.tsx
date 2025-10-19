@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState, type Dispatch, type FC, type SetStateAction } from 'react'
-import { type Response, type User } from './types';
-import { fetchUserData } from './user/controller';
-import { defaultUserObject } from './vars';
+import { type Response, type User } from '../types';
+import { fetchUserData } from '../user/controller';
+import { defaultUserObject } from '../vars';
+import socket from '../socket.io/socket_conn';
 
 
 interface ConnContextType {
@@ -21,6 +22,23 @@ interface ConnProviderProps {
     children: React.ReactNode
 }
 export const ConnectionProvider: FC<ConnProviderProps> = ({ children }) => {
+
+    // ✅ WebSocket setup
+    useEffect(() => {
+      // When connected
+      socket.on("connect", () => {
+          console.log("Socket connected:", socket.id);
+      });
+
+      socket.on("connect_error", (err) => {
+          console.error("Connection error:", err);
+      });
+
+      // Cleanup listeners on unmount
+      return () => {
+          socket.off("connect");
+      };
+  }, []);
 
   ///////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////////////////////

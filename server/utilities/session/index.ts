@@ -18,8 +18,9 @@ const sessionMiddleware: RequestHandler = session({
     }),
     cookie: {
         secure: true,
-        sameSite: "none"
-    }
+        sameSite: "none",
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 90), // 3 months
+    },
 });
 
 export default sessionMiddleware;

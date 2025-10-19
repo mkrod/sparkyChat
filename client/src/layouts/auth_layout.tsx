@@ -1,7 +1,7 @@
 import { type FC, type JSX } from 'react'
 import { Outlet } from 'react-router';
 import "./css/auth_layout.css";
-import { useChatProvider } from '@/constants/chatProvider';
+import { useChatProvider } from '@/constants/providers/chatProvider';
 
 const AuthLayout : FC = (): JSX.Element => {
     const { isMobile } = useChatProvider();

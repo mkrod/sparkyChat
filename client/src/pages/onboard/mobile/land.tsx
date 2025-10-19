@@ -1,5 +1,5 @@
 import { Appname } from '@/constants'
-import { useChatProvider } from '@/constants/chatProvider'
+import { useChatProvider } from '@/constants/providers/chatProvider'
 import { useState, type FC, type JSX} from 'react'
 import { HiMiniBars3CenterLeft } from 'react-icons/hi2'
 import { IoClose } from 'react-icons/io5'

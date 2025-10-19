@@ -20,6 +20,7 @@
     justify-content: center;
 }
 
+
 .app_nav_header_img {
     height: 2rem;
 }
@@ -52,6 +53,20 @@
     justify-content: center;
     border: 2px solid var(--app-accent);
     margin-bottom: 1rem;
+    position: relative;
+}
+
+.app_nav_header_img_skeleton{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
 }
 
 .app_navbar_user_picture {

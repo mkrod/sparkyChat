@@ -1,0 +1,116 @@
+.message_list_card_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 4rem;
+    overflow: hidden;
+    padding: 0.7rem 0.7rem;
+    cursor: pointer;
+    border: 0.5px solid transparent ;
+    border-radius: 0.5rem;
+    transition: background-color 0.375s ease-in-out;
+}
+
+
+.message_list_card_image_container{
+    height: 100%;
+    aspect-ratio: 1/1;
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: relative;
+}
+
+.message_list_card_image{
+    height: 98%;
+    width: 98%;
+    object-fit: fill;
+    border-radius: 50%;
+}
+
+
+.message_list_card_presence_indicator{
+    position: absolute;
+    bottom: 0rem;
+    right: 0.1rem;
+    height: 0.7rem;
+    width: 0.7rem;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+.message_list_card_content_name_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.message_list_card_content_user_name_container{
+    display: flex;
+    flex-direction: row;
+    gap: 0.3rem;
+    align-items: center;
+    font-family: Quicksand, sans-serif;
+    font-weight: 600;
+}
+
+.message_list_card_content_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.message_list_card_content_typing_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 0.6rem;
+    letter-spacing: 0.1rem;
+    color: var(--app-accent);
+    font-weight: 600;
+}
+
+
+.message_list_card_content_message_status_icon_container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1rem;
+    width: 1rem;
+}
+
+
+.message_list_card_content_last_message{
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+
+
+
+.message_list_card_meta_container{
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    align-items: end;
+}
+
+.message_list_card_meta_unread_count_container:not(:empty){
+    padding: 0 0.2rem;
+    min-width: 1rem;
+    min-height: 1rem;
+    border-radius: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3b82f6;
+    font-size: 0.6rem;
+    color: #dfdfdf;
+    font-family: Space Mono, sans-serif;
+}

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type Dispatch, type FC, type SetStateAction } from 'react'
-import type { colorScheme, Scheme } from './types';
-import { colors } from './vars';
+import type { colorScheme, Scheme } from '../types';
+import { colors } from '../vars';
 
 
 

@@ -3,7 +3,7 @@ import "./css/auth.css";
 import "./css/mobile_auth.css";
 import MobileAuth from './mobile/auth';
 import DesktopAuth from './desktop/auth';
-import { useChatProvider } from '@/constants/chatProvider';
+import { useChatProvider } from '@/constants/providers/chatProvider';
 
 const Auth: FC = ():JSX.Element => {
 
