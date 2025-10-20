@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, Dispatch, SetStateAction } from "react";
 
 export interface colorScheme {
     background: CSSProperties['background'];
@@ -64,4 +64,21 @@ export interface MessageList {
 export interface Presence {
     user_id: string;
     status: "online" | "offline" | "away" | "busy";
+}
+
+export interface NotificationCounts {
+    messages: number;
+    calls: number;
+    alerts: number;
+}
+
+export interface AppLayoutContextType {
+    currentChatId: string | null;
+    setCurrentChatId: Dispatch<SetStateAction<string | null>>;
+}
+
+
+export interface CurrentChatMessageType {
+    userData: User;
+    messageData: Message[];
 }

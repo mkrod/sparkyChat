@@ -7,10 +7,24 @@
     padding: 0.7rem 0.7rem;
     cursor: pointer;
     border: 0.5px solid transparent ;
-    border-radius: 0.5rem;
+    border-radius: 0.3rem;
     transition: background-color 0.375s ease-in-out;
+    position: relative;
 }
 
+.message_list_card_is_active{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0.2rem;
+    background-color: transparent;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.message_list_card_is_active.active{
+    background-color: var(--app-accent);
+}
 
 .message_list_card_image_container{
     height: 100%;

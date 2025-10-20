@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { messageModel } from "../../utilities/db/model/messages.model.js";
+import { usersModel } from "../../utilities/db/model/users.js";
 
 const getUserMessageList = async (req: Request, res: Response) => {
     try{
@@ -86,4 +87,44 @@ const getUserMessageList = async (req: Request, res: Response) => {
     }
 }
 
-export { getUserMessageList };
+
+
+const getMutualChat = async (req: Request, res: Response) => {
+  try {
+      const user_id = req.session.user_id;
+      const { chatId } = req.body;
+
+      if (!user_id) {
+          return res.json({ message: "Unauthorized", status: 401, data: null });
+      }
+
+      if (!chatId) {
+          return res.json({ message: "Bad Request: chatId is required", status: 400, data: null });
+      }
+
+      // find all messages where (sender=user_id and receiver=chatId) or vice versa
+      const messages = await messageModel.find({
+          $or: [
+              { sender_id: user_id, receiver_id: chatId },
+              { sender_id: chatId, receiver_id: user_id },
+          ],
+      }).sort({ createdAt: 1 }); // oldest to newest (you can flip with -1)
+
+      // fetch the other user's document
+      const otherUser = await usersModel.findOne({ user_id: chatId }).select("-password -sessions");
+
+      return res.json({
+          message: "success",
+          status: 200,
+          data: {
+              otherUser,
+              messages,
+          },
+      });
+  } catch (error: any) {
+      console.error(error);
+      return res.json({ message: "Internal Server Error", status: 500, data: null });
+  }
+};
+
+export { getUserMessageList, getMutualChat };

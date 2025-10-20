@@ -1,4 +1,5 @@
-import type { colorScheme, User } from "./types";
+import type { RefObject } from "react";
+import type { colorScheme, NotificationCounts, User } from "./types";
 
 export const colors: Record<string, colorScheme> = {
     light: {
@@ -58,5 +59,42 @@ export function formatDate(dateInput: Date | string): string {
       // return dd/mm/yyyy
       return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
     }
+}
+
+
+export const saveCaret = (window: Window, caretPosRef: RefObject<number | null>) => {
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    const range = sel.getRangeAt(0);
+    caretPosRef.current = range.startOffset;
   }
-  
+};
+
+export const restoreCaret = (window: Window, caretPosRef: RefObject<number | null>, inputRef: RefObject<HTMLDivElement | null>) => {
+      const node = inputRef.current;
+      if (node && caretPosRef.current !== null) {
+        const sel = window.getSelection();
+        const range = document.createRange();
+        range.setStart(node.firstChild || node, caretPosRef.current);
+        range.collapse(true);
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+};
+
+export const scrollElementToBottom = (obj: RefObject<HTMLElement|null>) => {
+  if(!obj.current) return;
+  const element = obj.current;
+  element.scrollTop = element.scrollHeight;
+  element.onscroll = () =>{
+    console.log("Top: ", element.scrollTop)
+    console.log("Scroll Height", element.scrollHeight)
+    console.log("Height", element.style.height)
+ }
+}
+
+export const defaultNotificationCounts: NotificationCounts = {
+    messages: 0,
+    calls: 0,
+    alerts: 0,
+}

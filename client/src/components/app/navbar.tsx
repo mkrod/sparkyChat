@@ -1,19 +1,32 @@
 import { AppLogo, Appname } from '@/constants'
-import { useState, type FC, type JSX } from 'react'
+import { useEffect, useState, type FC, type JSX } from 'react'
 import "./css/navbar.css";
 import { useConnProvider } from '@/constants/providers/conn_provider';
-import { IoCallOutline } from 'react-icons/io5';
 import { TbMessage2 } from 'react-icons/tb';
-import { LuBell, LuSettings2 } from 'react-icons/lu';
+import { LuBell, LuPhone, LuSettings2 } from 'react-icons/lu';
 import { RxUpdate } from 'react-icons/rx';
 import { BiExit } from 'react-icons/bi';
 import { useChatProvider } from '@/constants/providers/chatProvider';
 import ActivityIndicator from '../utility/activity_indicator';
+import { useDataProvider } from '@/constants/providers/data_provider';
+import type { MessageList, NotificationCounts } from '@/constants/types';
+import { defaultNotificationCounts } from '@/constants/vars';
 
 const DesktopNavbar: FC = (): JSX.Element => {
     const { user } = useConnProvider();
     const { activeColor, userScheme, switchScheme } = useChatProvider();
+    const { messagesList } = useDataProvider();
     const [dpIsLoading, setDpIsLoading] =  useState<boolean>(true);
+    const [notificationCounts, setNotificationCounts] = useState<NotificationCounts>(defaultNotificationCounts);
+    useEffect(() => {
+        if(messagesList.length === 0) return;
+        let messages = 0, calls = 0, alerts = 0;
+        messagesList.map((ml: MessageList) => messages += ml.unreadCount);
+        const data = {
+            messages, calls, alerts
+        }
+        setNotificationCounts(data);
+    }, [messagesList]);
 
 
   return (
@@ -55,7 +68,7 @@ const DesktopNavbar: FC = (): JSX.Element => {
             </div>
             <div className="app_navbar_user_sub_section_container">
                 <div className='app_navbar_user_sub_section_icon'>
-                    <IoCallOutline />
+                    <LuPhone />
                 </div>
                 <div className='app_navbar_user_sub_section_icon'>
                     <TbMessage2 />
@@ -74,7 +87,7 @@ const DesktopNavbar: FC = (): JSX.Element => {
                 </div>
                 <div className='app_navbar_link_label_container'>
                     <span className='app_navbar_label'>Chats</span>
-                    <div className='app_navbar_notification_count'>88</div>
+                    <div className='app_navbar_notification_count'>{ notificationCounts.messages }</div>
                 </div>
             </div>
             <div className="app_navbar_link_container">
@@ -88,7 +101,7 @@ const DesktopNavbar: FC = (): JSX.Element => {
             </div>
             <div className="app_navbar_link_container">
                 <div className='app_navbar_link_icon_container'>
-                    <IoCallOutline color='#940063' />
+                    <LuPhone color='#940063' />
                 </div>
                 <div className='app_navbar_link_label_container'>
                     <span className='app_navbar_label'>Calls</span>

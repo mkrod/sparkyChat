@@ -1,12 +1,15 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import type { MessageList, Presence, Response } from '../types';
+import { createContext, useContext, useEffect, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react'
+import type { CurrentChatMessageType, MessageList, Presence, Response } from '../types';
 import socket from "@/constants/socket.io/socket_conn";
-import { fetchMessageList, fetchUsersPresence } from '../user/controller';
+import { fetchCurrentChatMessages, fetchMessageList, fetchUsersPresence } from '../user/controller';
 
 interface DataProviderTypes {
     messagesList: MessageList[];
     newMessage: boolean;
     presence: Presence[];
+    currentChatId: string | undefined;
+    setCurrentChatId: Dispatch<SetStateAction<string | undefined>>;
+    currentChatMessages: CurrentChatMessageType | undefined;
 }
 
 
@@ -67,12 +70,35 @@ export const DataProvider = ({ children }: {children: ReactNode}) => {
         })
         .finally(() => setPresenceChanged(false));
     }, [presenceChanged]);
+
+    ////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////
+    ////////////////////// specific chats //////////////////////////////
+    const [currentChatId, setCurrentChatId] = useState<string | undefined>(undefined);
+    const [currentChatMessages, setCurrentChatMessages] = useState<CurrentChatMessageType>(); //replace any with Message type when available
+    useEffect(() => {
+        if(!currentChatId) return setCurrentChatMessages(undefined);
+        //fetch messages for current chat from server
+        
+        fetchCurrentChatMessages(currentChatId)
+        .then((res: Response) => {
+            if(res.message !== "success") throw Error("Failed to fetch current chat messages");
+            setCurrentChatMessages(res.data as CurrentChatMessageType);
+        })
+        .catch((err: Error) => {
+            console.error("Error fetching current chat messages:", err);
+        });
+    }, [currentChatId]);
     
   return (
     <DataContext.Provider value={{
         messagesList,
         newMessage,
-        presence
+        presence,
+        currentChatId,
+        setCurrentChatId,
+        currentChatMessages
     }}>
         {children}
     </DataContext.Provider>

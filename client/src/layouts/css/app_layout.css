@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: row;
     height: 100vh;
-    
 }
 
 .app_layout_navbar_container{
@@ -21,4 +20,5 @@
 .app_layout_content_container{
     width: calc(100vw - 15rem);
     min-width: 70%;
+    height: 100%;
 }

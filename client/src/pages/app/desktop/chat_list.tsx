@@ -5,12 +5,13 @@ import { IoSearch } from 'react-icons/io5';
 import { useChatProvider } from '@/constants/providers/chatProvider';
 import { useDataProvider } from '@/constants/providers/data_provider';
 import MessageListcard from '@/components/app/messages/messageListCard';
+import type { User } from '@/constants/types';
 
 const DesktopChatList: FC = (): JSX.Element => {
   
   const searchRef = useRef<HTMLInputElement|null>(null);
   const { activeColor } = useChatProvider();
-  const { messagesList } = useDataProvider();
+  const { messagesList, setCurrentChatId } = useDataProvider();
 
   return (
     <div className='chat_list_container'>
@@ -28,7 +29,11 @@ const DesktopChatList: FC = (): JSX.Element => {
       <div className="chat_list_chats_container">
         {messagesList.map((chat) => {
           return (
-            <MessageListcard data={chat} key={chat._id} />
+            <MessageListcard
+            data={chat}
+            userClick={(id: User['user_id']) => setCurrentChatId(id)}
+            key={chat._id} 
+            />
           )
         })}
       </div>

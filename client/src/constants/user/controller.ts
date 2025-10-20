@@ -16,3 +16,8 @@ export const fetchUsersPresence = async (): Promise<Response> => {
     const response: Response = await serverRequest("get", "user/presence");
     return response;
 }
+
+export const fetchCurrentChatMessages = async (chatId: string): Promise<Response> => {
+    const response: Response = await serverRequest("post", `user/messages/chat`, { chatId }, "json");
+    return response;
+}

@@ -8,6 +8,7 @@ import { ConnectionProvider } from '@/constants/providers/conn_provider';
 const AppLayout: FC = (): JSX.Element => {
   const { isMobile } = useChatProvider();
 
+
   return !isMobile ? (
     <ConnectionProvider>
       <div className='app_layout_container'>

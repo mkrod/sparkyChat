@@ -1,6 +1,6 @@
 import { useEffect, useState, type FC, type JSX, type ReactNode } from 'react';
 import "./css/messageListCard.css";
-import type { Message, MessageList, Presence } from '@/constants/types';
+import type { Message, MessageList, Presence, User } from '@/constants/types';
 import { formatDate } from '@/constants/vars';
 import { MdOutlineImage } from 'react-icons/md';
 import { IoIosDocument, IoIosVideocam } from 'react-icons/io';
@@ -12,12 +12,13 @@ import { IoCheckmark, IoCheckmarkDone } from 'react-icons/io5';
 
 interface Props {
     data: MessageList;
+    userClick?: (userId: User['user_id']) => void;
 }
 
-const MessageListcard: FC<Props> = ({ data }): JSX.Element => {
+const MessageListcard: FC<Props> = ({ data, userClick }): JSX.Element => {
 
     const { activeColor } = useChatProvider();
-    const { presence } = useDataProvider();
+    const { presence, currentChatId } = useDataProvider();
     const { user } = useConnProvider();
 
     const name: string = data.otherPartyData.name.first + " " + data.otherPartyData.name.last;
@@ -82,7 +83,8 @@ const MessageListcard: FC<Props> = ({ data }): JSX.Element => {
     /////////////  typing
     const [typing, _] = useState<boolean>(false);
   return (
-    <div style={{ borderColor: activeColor.fadedBorder  }} className='message_list_card_container'>
+    <div style={{ borderColor: activeColor.fadedBorder }} className='message_list_card_container'>
+        <div className={`message_list_card_is_active ${currentChatId === data.otherPartyData.user_id ? "active" : ""}`}/>
         <div className="message_list_card_image_container">
             <img src={data.otherPartyData.picture} className='message_list_card_image' />
             <div 
@@ -90,7 +92,7 @@ const MessageListcard: FC<Props> = ({ data }): JSX.Element => {
                 className="message_list_card_presence_indicator">
             </div>
         </div>
-        <div className="message_list_card_content_name_container">
+        <div onClick={() => userClick ? userClick(data.otherPartyData.user_id) : null} className="message_list_card_content_name_container">
             <div className="message_list_card_content_user_name_container">
                 <span className='message_list_card_content_user_name'>{ name.length > 15 ? `${name.slice(0, 16)}...` : name }</span>
             </div>
