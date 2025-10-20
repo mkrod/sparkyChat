@@ -3,51 +3,57 @@ import "./css/in_chat.css";
 import { useChatProvider } from '@/constants/providers/chatProvider';
 import { LuPhone, LuVideo } from 'react-icons/lu';
 import { HiDotsVertical, HiOutlineEmojiHappy } from 'react-icons/hi';
-import { defaultDp } from '@/constants';
 import { TbPaperclip } from 'react-icons/tb';
 import { PiPaperPlaneTiltFill } from 'react-icons/pi';
-import { restoreCaret, saveCaret, scrollElementToBottom } from '@/constants/vars';
+import { getUserPresenceStatus, restoreCaret, saveCaret, scrollElementToBottom } from '@/constants/vars';
 import { useDataProvider } from '@/constants/providers/data_provider';
 import NoChatSelected from '@/components/utility/no_chat_selected';
+import type { Message, User } from '@/constants/types';
 
 const InChat: FC = (): JSX.Element => {
     const { activeColor } = useChatProvider();
-    const { currentChatMessages, currentChatId } = useDataProvider();
+    const { currentChatMessages, currentChatId, presence } = useDataProvider();
 
     ///////////////////////// input caret management
     const [textValue, setTextValue] = useState("");
     const inputRef = useRef<HTMLDivElement | null>(null);
     const caretPosRef = useRef<number | null>(null);
-  
+
     const handleTextChange = (e: FormEvent<HTMLDivElement>) => {
         saveCaret(window, caretPosRef);
         const text = e.currentTarget.textContent || "";
         setTextValue(text);
         requestAnimationFrame(() => {
-          restoreCaret(window, caretPosRef, inputRef);
-          scrollElementToBottom(inputRef);
+            restoreCaret(window, caretPosRef, inputRef);
+            scrollElementToBottom(inputRef);
         });
     };
-    
-//////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+    const chatMessages: Message[] = (currentChatMessages && currentChatMessages.messageData)||[];
+    const friendData = (currentChatMessages && currentChatMessages.otherUser) as User;
+    const userPresence = (currentChatMessages && presence.find((p) => p.user_id === friendData.user_id)?.status) || "offline";
+    const userStatus = (currentChatMessages && getUserPresenceStatus(userPresence, friendData.last_login));
+    const userTyping = false; // TO BE IMPLEMENTED LATER
 
 
 
 
-    return currentChatId ? (
+    return currentChatId && currentChatMessages ? (
         <div style={{ borderColor: activeColor.fadedBorder }} className='in_chat_container'>
             <div style={{ borderColor: activeColor.fadedBorder }} className="in_chat_header_container">
                 <div className="in_chat_header_image_container">
-                    <img className="in_chat_header_image" src={defaultDp} alt="" />
+                    <img className="in_chat_header_image" src={friendData.picture} alt="" />
                 </div>
 
                 <div className="in_chat_header_details_container">
-                    <div className="in_chat_header_name_container">Sharkor Motele</div>
-                    <div style={{ color: activeColor.textFadeSecondary }} className="in_chat_header_status_container">Online</div>
+                    <div className="in_chat_header_name_container">{ friendData.name.first + " " + friendData.name.last }</div>
+                    {!userTyping && <div style={{ color: activeColor.textFadeSecondary }} className="in_chat_header_status_container">{ userStatus }</div>}
+                    {userTyping && <div className="in_chat_header_typing_container">Typing...</div>}
                 </div>
 
                 <div className="in_chat_header_other_icons">

@@ -26,6 +26,7 @@ export interface User {
         last: string;
     };
     picture: string;
+    last_login: Date;
     created_at: string;
 }
 
@@ -79,6 +80,6 @@ export interface AppLayoutContextType {
 
 
 export interface CurrentChatMessageType {
-    userData: User;
+    otherUser: User;
     messageData: Message[];
 }

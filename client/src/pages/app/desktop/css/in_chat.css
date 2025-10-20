@@ -49,6 +49,15 @@
     font-size: 0.65rem;
 }
 
+.in_chat_header_typing_container{
+    font-weight: 700;
+    font-family: Quicksand, sans-serif;
+    font-size: 0.65rem;
+    font-style: italic;
+    color: var(--app-accent);
+    letter-spacing: 0.5px;
+}
+
 .in_chat_header_other_icons{
     margin-left: auto;
     display: flex;

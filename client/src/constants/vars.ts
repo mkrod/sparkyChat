@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import type { colorScheme, NotificationCounts, User } from "./types";
+import type { colorScheme, NotificationCounts, Presence, User } from "./types";
 
 export const colors: Record<string, colorScheme> = {
     light: {
@@ -98,3 +98,41 @@ export const defaultNotificationCounts: NotificationCounts = {
     calls: 0,
     alerts: 0,
 }
+
+
+export const getUserPresenceStatus = (presence: Presence["status"], last_seen: Date): string => {
+  let status: string;
+
+  if (presence !== "offline") {
+    return presence;
+  }
+
+  // when user is offline → compute last seen
+  const now = new Date();
+  const diffMs = now.getTime() - new Date(last_seen).getTime();
+  const diffMin = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMin / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMin < 1) {
+    status = "just now";
+  } else if (diffMin < 60) {
+    status = `${diffMin} min${diffMin > 1 ? "s" : ""} ago`;
+  } else if (diffHours < 24) {
+    status = `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  } else if (diffDays === 1) {
+    status = "yesterday";
+  } else {
+    const last = new Date(last_seen);
+    const isThisYear = last.getFullYear() === now.getFullYear();
+
+    const day = last.getDate();
+    const month = last.toLocaleString("en-US", { month: "short" });
+
+    status = isThisYear
+      ? `${day}, ${month}`
+      : `${day}, ${month} ${last.getFullYear()}`;
+  }
+
+  return status;
+};
