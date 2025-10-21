@@ -1,4 +1,4 @@
-import { AppLogo, Appname } from '@/constants'
+import { AppLogo, Appname, serverURL } from '@/constants'
 import { useEffect, useState, type FC, type JSX } from 'react'
 import "./css/navbar.css";
 import { useConnProvider } from '@/constants/providers/conn_provider';
@@ -55,7 +55,7 @@ const DesktopNavbar: FC = (): JSX.Element => {
                             />
                         </div>
                     )}
-                    <img onLoad={() => setTimeout(() => setDpIsLoading(false), 2000)} src={user.picture} className='app_navbar_user_picture' />
+                    <img onLoad={() => setTimeout(() => setDpIsLoading(false), 2000)} src={`${serverURL}/proxy?url=${encodeURIComponent(user.picture)}`} className='app_navbar_user_picture' />
                 </div>
                 <div className='app_navbar_user_details_container'>
                     <div className='app_navbar_user_details_names'>

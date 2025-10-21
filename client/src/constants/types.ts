@@ -83,3 +83,17 @@ export interface CurrentChatMessageType {
     otherUser: User;
     messageData: Message[];
 }
+
+export interface TypingType {
+    user_id: string;
+    isTyping: boolean;
+}
+
+
+export interface PreviewMediaData {
+    previewUrl: string; //if photo or video
+    fileType: "photo" | "video" | "audio" | "others";
+    fileName: string;
+    fileExtension: string;
+    fileSize: string; // KB, MB, GB, TB
+}

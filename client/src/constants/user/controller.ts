@@ -21,3 +21,8 @@ export const fetchCurrentChatMessages = async (chatId: string): Promise<Response
     const response: Response = await serverRequest("post", `user/messages/chat`, { chatId }, "json");
     return response;
 }
+
+export const getTypingList = async (): Promise<Response> => {
+    const response: Response = await serverRequest("get", "user/typing/get");
+    return response;
+}

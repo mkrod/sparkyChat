@@ -1,5 +1,5 @@
 import type { RefObject } from "react";
-import type { colorScheme, NotificationCounts, Presence, User } from "./types";
+import type { colorScheme, NotificationCounts, Presence, PreviewMediaData, User } from "./types";
 
 export const colors: Record<string, colorScheme> = {
     light: {
@@ -86,11 +86,6 @@ export const scrollElementToBottom = (obj: RefObject<HTMLElement|null>) => {
   if(!obj.current) return;
   const element = obj.current;
   element.scrollTop = element.scrollHeight;
-  element.onscroll = () =>{
-    console.log("Top: ", element.scrollTop)
-    console.log("Scroll Height", element.scrollHeight)
-    console.log("Height", element.style.height)
- }
 }
 
 export const defaultNotificationCounts: NotificationCounts = {
@@ -135,4 +130,48 @@ export const getUserPresenceStatus = (presence: Presence["status"], last_seen: D
   }
 
   return status;
+};
+
+
+
+export const createMediaPreviewObject = (file: File): PreviewMediaData => {
+  const fileType = getFileType(file.type);
+  const fileExtension = getFileExtension(file.name);
+  const fileSize = formatFileSize(file.size);
+  const previewUrl =
+    fileType === "photo" || fileType === "video"
+      ? URL.createObjectURL(file)
+      : "";
+
+  return {
+    previewUrl,
+    fileType,
+    fileName: file.name,
+    fileExtension,
+    fileSize,
+  };
+};
+
+export const getFileType = (mime: string): PreviewMediaData["fileType"] => {
+  if (mime.startsWith("image/")) return "photo";
+  if (mime.startsWith("video/")) return "video";
+  if (mime.startsWith("audio/")) return "audio";
+  return "others";
+};
+
+export const getFileExtension = (name: string): string => {
+  const parts = name.split(".");
+  return parts.length > 1 ? parts.pop()!.toLowerCase() : "";
+};
+
+export const formatFileSize = (bytes: number): string => {
+  const units = ["B", "KB", "MB", "GB", "TB"];
+  let size = bytes;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex++;
+  }
+  return `${size.toFixed(1)} ${units[unitIndex]}`;
 };

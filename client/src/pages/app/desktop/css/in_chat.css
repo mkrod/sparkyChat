@@ -6,6 +6,7 @@
     border-radius: 0.3rem;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .in_chat_header_container{
@@ -21,6 +22,7 @@
     aspect-ratio: 1/1;
     height: 100%;
     border-radius: 50%;
+    position: relative;
 }
 
 .in_chat_header_image{
@@ -94,6 +96,7 @@
     max-height: 6rem;
     padding: 0.5rem 1rem;
     border-top: 1px solid transparent;
+    position: relative;
 }
 
 
@@ -170,3 +173,49 @@
 .in_chat_footer_file_field::-webkit-file-upload-button {
     cursor: pointer;
 }
+
+.in_chat_footer_emoji_container{
+    position: absolute;
+    right: 0;
+    top: -17rem;
+    height: 16rem;
+    scale: 0;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+    overflow: auto;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+}
+
+
+.in_chat_footer_emoji_container::-webkit-scrollbar, .EmojiPickerReact .epr-body::-webkit-scrollbar{
+    width: 5px;
+}
+.in_chat_footer_emoji_container::-webkit-scrollbar-track, .EmojiPickerReact .epr-body::-webkit-scrollbar-track{
+    background-color: #cccccc7e;
+    border-radius: 3px;
+}
+.in_chat_footer_emoji_container::-webkit-scrollbar-thumb, .EmojiPickerReact .epr-body::-webkit-scrollbar-thumb{
+    background-color: var(--app-accent);
+    border-radius: 3px;
+}
+
+.EmojiPickerReact {
+    border: none !important;
+}
+
+.active{
+    scale: 1;
+    opacity: 1;
+}
+
+
+.in_chat_media_preview_container{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 6rem;
+    left: 0;
+    z-index: 2;
+}
+

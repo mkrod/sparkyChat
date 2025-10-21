@@ -1,10 +1,13 @@
-interface CustomResponse {
+import type { SessionData } from "express-session";
+import type { Namespace } from "socket.io";
+
+export interface CustomResponse {
     message?: string | undefined;
     status?: number | undefined;
     data?: any | undefined;
 }
 
-type SocketID = { socket_id: string };
+export type SocketID = { socket_id: string };
 
 export interface User {
     user_id: string;
@@ -36,4 +39,14 @@ export interface CurrentChatMessageType {
     messageData: Message[];
 }
 
-export type { CustomResponse, SocketID }
+
+export interface TypingUsers {
+    isTyping: boolean;
+}
+
+export interface SocketHandlerType {
+    sender_id: string;
+    receiver_id: string;
+    sess: SessionData;
+    io: Namespace;
+}

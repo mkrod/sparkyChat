@@ -53,6 +53,7 @@
     width: 0.7rem;
     border: 2px solid #fff;
     border-radius: 50%;
+    z-index: 1;
 }
 .message_list_card_content_name_container{
     display: flex;
