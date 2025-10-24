@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema({
     picture: String,
     created_at: { type: Date, default: Date.now },
     last_login: { type: Date, default: Date.now },
+    privacy: {
+        read_receipt: { type: Boolean, default: true },
+    }
 });
 
 const usersModel = mongoose.model("users", userSchema);

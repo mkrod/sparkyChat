@@ -4,11 +4,12 @@ import { type Server as HttpsServer } from "https";
 import sessionMiddleware from "../session/index.js";
 import { onlineUsersModel } from "../db/model/onlineUsers.js";
 import type { NextFunction } from "express";
-import dotenv from "dotenv";
 import SocketController from "../../controllers/socket/socket.controller.js";
 import { updateUserLastSeen } from "../../controllers/user/user.controllers.js";
-dotenv.config();
+//dotenv.config();
 
+
+let apiNamespace: ReturnType<Server["of"]>;
 
 export default function initWebSockets(server: HttpsServer) {
     const io = new Server(server, {
@@ -17,7 +18,8 @@ export default function initWebSockets(server: HttpsServer) {
             credentials: true,
         },
     });
-    const apiNamespace = io.of("/api");
+
+    apiNamespace = io.of("/api");
 
 
     apiNamespace.use((socket, next) => {
@@ -49,7 +51,7 @@ export default function initWebSockets(server: HttpsServer) {
 
         socket.on("disconnect", async () => {
             try {
-                updateUserLastSeen({ socket_id: socket.id});
+                await updateUserLastSeen({ socket_id: socket.id});
                 //await onlineUsersModel.deleteMany({ socket_id: socket.id });
                 await onlineUsersModel.updateOne(
                     { socket_id: socket.id },
@@ -64,4 +66,11 @@ export default function initWebSockets(server: HttpsServer) {
     });
 
     return { io, apiNamespace };
+}
+
+
+// export getter to use elsewhere
+export function getIoNamespace() {
+    if (!apiNamespace) throw new Error("Socket namespace not initialized");
+    return apiNamespace;
 }

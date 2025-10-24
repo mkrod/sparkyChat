@@ -10,6 +10,7 @@ const getUserData = async (req: Request, res: Response) => { //express
 
     const response = (await usersModel.findOne({ user_id }))?.toObject();
 
+
     return res.json(customResponse({ message: "done", status: 200, data: response }));
 }
 

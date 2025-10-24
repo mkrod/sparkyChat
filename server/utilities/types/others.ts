@@ -19,15 +19,30 @@ export interface User {
     };
     picture: string;
     created_at: string;
+    privacy: {
+        read_receipt: boolean;
+    }
+}
+
+export interface Media {
+    content: string;
+    caption: string;
+    size: number;
+    type: Message['type'];
+    originalName: string;
+    thumbnail?: string|undefined;
+    uploadedAt: Date;
 }
 
 export interface Message {
-    id: string;
+    _id?: string;
     chatId: string;
     senderId: string;
-    content: string;
+    receiverId: string;
+    content?: string;
+    media?: Media;
     type: "text" | "image" | "video" | "audio" | "file";
-    timestamp: number;
+    timestamp: Date;
     status: "sent" | "delivered" | "read";
     replyTo?: string;
     edited?: boolean;
@@ -40,13 +55,15 @@ export interface CurrentChatMessageType {
 }
 
 
-export interface TypingUsers {
-    isTyping: boolean;
-}
-
 export interface SocketHandlerType {
     sender_id: string;
     receiver_id: string;
     sess: SessionData;
     io: Namespace;
+}
+
+export interface markReadPayload {
+    sender_id: string;
+    receiver_id: string;
+    message_id: string;
 }
