@@ -86,7 +86,53 @@
 
 .in_chat_messages_container{
     flex-grow: 1;
-    overflow-y: auto;
+    overflow: auto;
+    position: relative;
+}
+
+.in_chat_messages_container::-webkit-scrollbar{
+    width: 5px;
+}
+.in_chat_messages_container::-webkit-scrollbar-track{
+    background-color: #cccccc7e;
+    border-radius: 3px;
+}
+.in_chat_messages_container::-webkit-scrollbar-thumb{
+    background-color: var(--app-accent);
+    border-radius: 3px;
+}
+
+
+.in_chat_messages_section{
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem;
+}
+
+.in_chat_message_section_date_container{
+    width: 100%;
+    position: sticky;
+    top: 0;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Quicksand, sans-serif;
+    font-weight: 700;
+    padding: 1rem;
+}
+
+.in_chat_message_section_date{
+    padding: 0.1rem 0.5rem ;
+    border-radius: 0.3rem;
+    cursor: text;
+}
+
+.in_chat_messages_section_messages{
+    display: flex;
+    flex-direction: column;
 }
 
 .in_chat_footer_container{

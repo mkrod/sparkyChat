@@ -1,0 +1,64 @@
+.msg_out_container{
+    display: flex;
+    flex-direction: column;
+    max-width: 60%;
+    background-color: var(--app-accent);
+    align-self: flex-end;
+    padding: 5px;
+    color: #eeeeee;
+    border-radius: 10px 10px 0 10px;
+    margin-bottom: 5px;
+    font-family: Quicksand, sans-serif;
+}
+
+.msg_out_chat_msg_container{
+    cursor: text;
+    width: fit-content;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.msg_out_chat_meta_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    gap: 0.2rem;
+}
+
+.msg_out_chat_meta_time{
+    font-size: 0.6rem;
+    font-weight: 600;
+}
+
+
+.msg_out_image_container{
+    position: relative;
+    max-width: 100%;
+}
+
+.msg_out_image{
+    height: 100%;
+    width: 100%;
+}
+
+.msg_out_download_container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.msg_out_loading_container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.msg_out_size_container{
+    bottom: 0.5rem;
+    left: 0.5rem;
+}

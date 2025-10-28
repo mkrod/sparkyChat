@@ -11,10 +11,6 @@ const NoChatSelected: FC = (): JSX.Element => {
                 <span>You haven't opened any message yet</span>
                 <span>Please select a message</span>
             </div>
-
-            <div className="no_chat_selected_button_container">
-                <button className="no_chat_selected_button">Start a new chat</button>
-            </div>
         </div>
     )
 }

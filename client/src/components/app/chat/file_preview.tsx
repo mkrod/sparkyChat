@@ -12,6 +12,7 @@ interface Props {
     exit: () => void;
     activeSlideNumber: number;
     setActiveSlideNumber: (i: number) => void;
+    sending: boolean;
 }
 
 type data = {
@@ -98,6 +99,12 @@ const FilePreview: FC<Props> = ({ mediaData, removeFile, exit, activeSlideNumber
             return (
               <div className={`file_preview_content_container ${activeSlide.fileType.toLowerCase()}`}>
                 <img src={activeSlide.previewUrl} className='file_preview_content_image' />
+              </div>
+            );
+          case "video":
+            return (
+              <div className={`file_preview_content_container ${activeSlide.fileType.toLowerCase()}`}>
+                <video controls src={activeSlide.previewUrl} className='file_preview_content_image' />
               </div>
             );
           default:

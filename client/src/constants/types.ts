@@ -28,15 +28,37 @@ export interface User {
     picture: string;
     last_login: Date;
     created_at: string;
+    privacy: {
+        read_receipt: boolean;
+    };
 }
 
+
+export type RawMedia = {
+    content: File;
+    caption: string;
+}
+
+export interface Media {
+    content: string;
+    caption: string;
+    size: number;
+    type: Message['type'];
+    originalName: string;
+    thumbnail?: string | undefined;
+    uploadedAt: Date;
+}
+
+
 export interface Message {
-    id: string;
+    _id?: string;
     chatId: string;
     senderId: string;
-    content: string;
+    receiverId: string;
+    content?: string;
+    media?: Media;
     type: "text" | "image" | "video" | "audio" | "file";
-    timestamp: number;
+    timestamp: Date;
     status: "sent" | "delivered" | "read";
     replyTo?: string;
     edited?: boolean;
@@ -61,6 +83,11 @@ export interface MessageList {
     }
 }
 
+export type GroupedMessages = {
+    dateLabel: string;
+    messages: Message[];
+};
+
 
 export interface Presence {
     user_id: string;
@@ -81,7 +108,7 @@ export interface AppLayoutContextType {
 
 export interface CurrentChatMessageType {
     otherUser: User;
-    messageData: Message[];
+    messages: Message[];
 }
 
 export interface TypingType {
@@ -96,4 +123,23 @@ export interface PreviewMediaData {
     fileName: string;
     fileExtension: string;
     fileSize: string; // KB, MB, GB, TB
+}
+
+export interface UserListTab {
+    label: string;
+    code: "add_friends" | "friends" | "groups" | "requests";
+}
+
+export interface UserList extends User {
+    presence: Presence;
+}
+
+export interface AllUsersType {
+    "page": number,
+    "perPage": number,
+    "total": number,
+    "totalPages": number,
+    "from": number,
+    "to": number,
+    "results": UserList[];
 }

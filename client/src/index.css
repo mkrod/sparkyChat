@@ -31,6 +31,17 @@
   -moz-user-drag: none;
 }
 
+*::-webkit-scrollbar{
+  width: 5px;
+}
+*::-webkit-scrollbar-track{
+  background-color: #cccccc7e;
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb{
+  background-color: var(--app-accent);
+  border-radius: 3px;
+}
 
 
 @media (prefers-color-scheme: light) {

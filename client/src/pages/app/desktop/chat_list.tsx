@@ -15,7 +15,7 @@ const DesktopChatList: FC = (): JSX.Element => {
 
   return (
     <div className='chat_list_container'>
-      <div className="chat_list_header">
+      <div className="chat_list_header">  { /* user_list.tsx is also using this classes in the header */ }
         <div className="chat_list_header_search_container">
           <IoSearch color={activeColor.textFade} />
           <input type='text' ref={searchRef}

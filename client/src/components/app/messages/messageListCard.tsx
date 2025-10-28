@@ -1,14 +1,13 @@
 import { useEffect, useState, type FC, type JSX, type ReactNode } from 'react';
 import "./css/messageListCard.css";
 import type { Message, MessageList, Presence, User } from '@/constants/types';
-import { formatDate } from '@/constants/vars';
+import { formatDate, presenceColor, statusIcon } from '@/constants/vars';
 import { MdOutlineImage } from 'react-icons/md';
 import { IoIosDocument, IoIosVideocam } from 'react-icons/io';
 import { AiFillAudio } from 'react-icons/ai';
 import { useChatProvider } from '@/constants/providers/chatProvider';
 import { useDataProvider } from '@/constants/providers/data_provider';
 import { useConnProvider } from '@/constants/providers/conn_provider';
-import { IoCheckmark, IoCheckmarkDone } from 'react-icons/io5';
 import { useUtilityProvider } from '@/constants/providers/utility_provider';
 import { serverURL } from '@/constants';
 import ActivityIndicator from '@/components/utility/activity_indicator';
@@ -27,17 +26,8 @@ const MessageListcard: FC<Props> = ({ data, userClick }): JSX.Element => {
 
     const name: string = data.otherPartyData.name.first + " " + data.otherPartyData.name.last;
 
-    const presenceColor = {
-        online: '#4caf50',
-        offline: '#999999',
-        away: '#ff9800',
-        busy: '#f44336',
-    }
-    const statusIcon: Record<Message['status'], ReactNode> = {
-        sent: <IoCheckmark style={{ color: "#999999" }} />,
-        delivered: <IoCheckmarkDone style={{ color: "#999999" }} />,
-        read: <IoCheckmarkDone style={{ color: '#4caf50' }} />,
-    }
+
+
     const [userPresence, setUserPresence] = useState<Presence['status']>("offline");
     const [dpIsLoading, setDpIsLoading] = useState<boolean>(true);
 
@@ -81,7 +71,7 @@ const MessageListcard: FC<Props> = ({ data, userClick }): JSX.Element => {
             case "file":
                 return "File";
             default:
-                return text;
+                return text.length > 25 ? text.slice(0, 25) + "..." : text;
         }
     }
 
@@ -134,9 +124,9 @@ const MessageListcard: FC<Props> = ({ data, userClick }): JSX.Element => {
                     className='message_list_card_meta_timestamp'>
                     {time}
                 </span>
-                <div className="message_list_card_meta_unread_count_container">
+                {data.unreadCount > 0 && <div className="message_list_card_meta_unread_count_container">
                     <span className='message_list_card_meta_unread_count'>{data.unreadCount}</span>
-                </div>
+                </div>}
             </div>
         </div>
     )

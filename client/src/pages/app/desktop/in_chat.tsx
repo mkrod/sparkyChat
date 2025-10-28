@@ -1,14 +1,14 @@
-import { useRef, useState, type ChangeEvent, type FC, type FormEvent, type JSX } from 'react'
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FC, type FormEvent, type JSX } from 'react'
 import "./css/in_chat.css";
 import { useChatProvider } from '@/constants/providers/chatProvider';
 import { LuPhone, LuVideo } from 'react-icons/lu';
 import { HiDotsVertical, HiOutlineEmojiHappy } from 'react-icons/hi';
 import { TbPaperclip } from 'react-icons/tb';
 import { PiPaperPlaneTiltFill } from 'react-icons/pi';
-import { createMediaPreviewObject, getUserPresenceStatus, restoreCaret, saveCaret, scrollElementToBottom } from '@/constants/vars';
+import { createMediaPreviewObject, getUserPresenceStatus, groupMessagesByDate, restoreCaret, saveCaret, scrollElementToBottom } from '@/constants/vars';
 import { useDataProvider } from '@/constants/providers/data_provider';
 import NoChatSelected from '@/components/utility/no_chat_selected';
-import { type PreviewMediaData, type Message, type User } from '@/constants/types';
+import { type PreviewMediaData, type Message, type User, type GroupedMessages } from '@/constants/types';
 import { useUtilityProvider } from '@/constants/providers/utility_provider';
 import socket from '@/constants/socket.io/socket_conn';
 import { useConnProvider } from '@/constants/providers/conn_provider';
@@ -16,6 +16,9 @@ import { serverURL } from '@/constants';
 import ActivityIndicator from '@/components/utility/activity_indicator';
 import EmojiPicker, { type EmojiClickData } from 'emoji-picker-react';
 import FilePreview from '@/components/app/chat/file_preview';
+import MsgOut from '@/components/app/chat/msg_out';
+import MsgIn from '@/components/app/chat/msg_in';
+import { sendMedia } from '@/constants/message/send.media';
 
 const InChat: FC = (): JSX.Element => {
     const { activeColor } = useChatProvider();
@@ -24,13 +27,13 @@ const InChat: FC = (): JSX.Element => {
     const { typingUsersList } = useUtilityProvider();
 
 
-    const chatMessages: Message[] = (currentChatMessages && currentChatMessages.messageData) || [];
+    const chatMessages: Message[] = (currentChatMessages && currentChatMessages.messages) || [];
     const friendData = (currentChatMessages && currentChatMessages.otherUser) as User;
     const userPresence = (currentChatMessages && presence.find((p) => p.user_id === friendData.user_id)?.status) || "offline";
     const userStatus = (currentChatMessages && getUserPresenceStatus(userPresence, friendData.last_login));
     const userTyping = (currentChatMessages && typingUsersList.find((tl) => tl.user_id === friendData.user_id)) ? true : false;
     const [dpIsLoading, setDpIsLoading] = useState<boolean>(true);
-
+    const [sending, setSending] = useState<boolean>(false);
     //////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
@@ -80,6 +83,7 @@ const InChat: FC = (): JSX.Element => {
     const [textValue, setTextValue] = useState("");
     const inputRef = useRef<HTMLDivElement | null>(null);
     const caretPosRef = useRef<number | null>(null);
+    const [repliedMsgId, setRepliedMsgId] = useState<string>();
 
     const handleTextChange = (e: FormEvent<HTMLDivElement>) => {
         if (!inputRef.current) return;
@@ -87,7 +91,7 @@ const InChat: FC = (): JSX.Element => {
         const text = e.currentTarget.textContent || "";
 
         if (previewMediaData.length === 0) {
-            console.log("Here")
+            //console.log("Here")
             // Normal message typing
             setTextValue(text);
 
@@ -124,19 +128,90 @@ const InChat: FC = (): JSX.Element => {
         inputRef.current.textContent += emojiObject.emoji
     }
 
+    //////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////
+    const chatScreen = useRef<HTMLDivElement | null>(null);
+    const grouppedMessages = useMemo(() => {
+        return groupMessagesByDate(chatMessages);
+    }, [chatMessages]);
+      
+
+    useEffect(() => {
+        if (!chatScreen.current) return;
+        //scroll to bottom
+        requestAnimationFrame(() => {
+            scrollElementToBottom(chatScreen);
+        })
+    }, [chatMessages.length]);
+
+    //console.log(chatMessages)
+    //console.log(grouppedMessages) //im seeing this log multiple times in the console, like a infinite rendering is happening
 
     //////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////
     ////////////////////////send logic/////////////////////////////////////////////
 
-    const send = () => {
-        console.log("Message: ", textValue);
-        console.log("Media Length: ", mediaFiles.length);
-        console.log("Media Files: ", mediaFiles);
-        if(mediaFiles.length === 0 && textValue === "") return;
 
-        alert("Send Now...")
+
+
+
+    const send = async () => {
+        //send it as array of object and insert with loop
+        //so it can handle multiple media sent
+        if(sending) return;
+        if (mediaFiles.length === 0 && textValue === "") return;
+
+        setSending(true);
+        if (mediaFiles.length === 0) {
+            const message: Message = {
+                senderId: user?.user_id,
+                receiverId: friendData?.user_id,
+                chatId: crypto.randomUUID(),
+                content: textValue,
+                type: "text",
+                timestamp: new Date(),
+                status: "sent",
+                replyTo: repliedMsgId,
+            }
+
+            socket.emit("new_message", { message })
+            setTextValue("");
+            if (inputRef.current) {
+                inputRef.current.textContent = "";
+            }
+        } else {
+            const formData = new FormData();
+            const users = {
+                senderId: user.user_id,
+                receiverId: friendData.user_id
+            }
+            formData.append("users", JSON.stringify(users));
+            mediaFiles.forEach((mf, i) => {
+                const meta = { caption: mediaCaption[i] }
+                formData.append("files", mf);
+                formData.append("metadata", JSON.stringify(meta));
+            })
+
+
+            const response = await sendMedia({ formData });
+            if (response.status !== 200) {
+                setSending(false);
+                return
+            };
+
+            setMediaCaption([]);
+            setMediaFiles([]);
+            setPreviewMediaData([]);
+
+        }
+
+
+        setSending(false);
     }
 
 
@@ -175,8 +250,54 @@ const InChat: FC = (): JSX.Element => {
                     </div>
                 </div>
             </div>
-            <div className="in_chat_messages_container">
+            <div ref={chatScreen} className="in_chat_messages_container">
+                {grouppedMessages.map((gm: GroupedMessages, idx: number) => {
 
+                    return (
+                        <div key={idx} className='in_chat_messages_section'>
+                            <div style={{ color: activeColor.textFade, zIndex: "5"  }} className='in_chat_message_section_date_container'>
+                                <span style={{ background: activeColor.fadeBackground}} className='in_chat_message_section_date'>{gm.dateLabel}</span>
+                            </div>
+                            <div className='in_chat_messages_section_messages'>
+                                {gm.messages.map((m, index) => {
+                                    const whoSentLastMsgId = chatMessages[index - 1]?.senderId;
+                                    const whoReceivedLastMsgId = chatMessages[index - 1]?.chatId;
+                                    const LastMsgTimestamp = chatMessages[index - 1]?.timestamp;
+
+                                    const iSentLastsg = whoSentLastMsgId === user.user_id;
+                                    const iReceivedLastMsg = whoReceivedLastMsgId === user.user_id;
+                                    const sameTime = m.timestamp === LastMsgTimestamp;
+
+
+
+                                    switch (m.senderId) {
+                                        case user.user_id:
+                                            return (
+                                                <MsgOut
+                                                    key={index}
+                                                    message={m}
+                                                    stack={iSentLastsg && sameTime}
+                                                />
+
+                                            )
+                                        default:
+                                            return (
+                                                <MsgIn
+                                                    key={index}
+                                                    message={m}
+                                                    stack={iReceivedLastMsg && sameTime}
+                                                    friendData={friendData}
+                                                    parentContainer={chatScreen}
+                                                />
+                                            )
+                                    }
+
+                                })}
+                            </div>
+                        </div>
+                    )
+
+                })}
             </div>
             <div style={{ borderColor: activeColor.fadedBorder }} className="in_chat_footer_container">
                 <div className="in_chat_footer_input_container">
@@ -205,7 +326,8 @@ const InChat: FC = (): JSX.Element => {
                         <HiOutlineEmojiHappy size={20} color='var(--app-accent)' />
                     </div>
                     <div title='Send' className="in_chat_header_icon" onClick={send}>
-                        <PiPaperPlaneTiltFill size={20} color={`${textValue === "" && previewMediaData.length === 0 ? "grey" : 'var(--app-accent)'}`} />
+                        {!sending && <PiPaperPlaneTiltFill size={20} color={`${textValue === "" && previewMediaData.length === 0 && sending ? "grey" : 'var(--app-accent)'}`} />}
+                        {sending && <ActivityIndicator size='small' style='spin' />}
                     </div>
                 </div>
                 <div style={{ borderColor: activeColor.fadedBorder }} className={`in_chat_footer_emoji_container ${showEmojiPicker ? "active" : ""}`}>
@@ -220,6 +342,7 @@ const InChat: FC = (): JSX.Element => {
                         exit={destroyAllFiles}
                         activeSlideNumber={activeSlideNumber}
                         setActiveSlideNumber={(ind) => setActiveSlideNumber(ind)}
+                        sending={sending}
                     />
                 </div>)}
         </div>

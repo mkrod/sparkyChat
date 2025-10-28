@@ -29,6 +29,7 @@
     font-weight: 700;
     font-family: Quicksand, sans-serif;
     color: var(--app-accent);
+    cursor: pointer;
 }
 
 .app_home_content_container{
