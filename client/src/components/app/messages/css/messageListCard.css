@@ -60,6 +60,7 @@
     flex-direction: column;
     justify-content: center;
     font-size: 0.8rem;
+    
 }
 
 .message_list_card_content_user_name_container{
@@ -69,6 +70,15 @@
     align-items: center;
     font-family: Quicksand, sans-serif;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message_list_card_content_user_name{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .message_list_card_content_container{
@@ -101,6 +111,11 @@
 .message_list_card_content_last_message{
     font-size: 0.7rem;
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 100%;
 }
 
 

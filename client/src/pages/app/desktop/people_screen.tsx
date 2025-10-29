@@ -2,7 +2,7 @@ import { useChatProvider } from '@/constants/providers/chatProvider';
 import { useDataProvider } from '@/constants/providers/data_provider';
 import type { UserListTab } from '@/constants/types';
 import { userListTabs } from '@/constants/var_2';
-import { useEffect, useRef, useState, type Dispatch, type FC, type JSX, type KeyboardEvent, type SetStateAction } from 'react'
+import { useRef, useState, type Dispatch, type FC, type JSX, type KeyboardEvent, type SetStateAction } from 'react'
 import { IoSearch } from 'react-icons/io5';
 import "./css/people_screen.css";
 import UsersList from '@/components/app/people/users_list';
@@ -12,13 +12,13 @@ import ActivityIndicator from '@/components/utility/activity_indicator';
 const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = ({ visibitySetter }): JSX.Element => {
 
     const { messagesList } = useDataProvider();
-    const { activeColor } = useChatProvider();
-    const { nameFilter, setNameFilter, fetchUsers, setFetchUsers } = usePeopleProvider();
+    const { activeColor, nameFilter, setNameFilter } = useChatProvider();
+    const { fetchUsers, setFetchUsers } = usePeopleProvider();
     const searchRef = useRef<HTMLInputElement | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
     //const [searchTerm, setSearchTerm] = useState<string>("")
     const [activeTab, setActiveTab] = useState<UserListTab>(userListTabs[0]);
     const isActiveTab = (tab: UserListTab) => tab.code === activeTab.code;
-    const [delayingSearch, setDelayingSearch] = useState<boolean>(false);
 
 
 
@@ -70,8 +70,8 @@ const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = 
                 ))}
             </div>
 
-            <div className='user_tab_screens_container'>
-                {activeTab.code === "add_friends" && <UsersList />}
+            <div ref={containerRef} className='user_tab_screens_container'>
+                {activeTab.code === "add_friends" && <UsersList container={containerRef.current} />}
             </div>
         </div>
     )

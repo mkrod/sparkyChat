@@ -6,7 +6,7 @@ export const googleClientID: string = "86436725623-dtnh7ms0ba1hp5c9hned8jefi2h9i
 export const googleRedirectURI: string = `${serverURL}/auth/google/callback`;
 
 export const serverRequest = async (
-    method: "post" | "get" | "put",
+    method: "post" | "get" | "put" | "delete",
     route: string,
     data?: any,
     type?: "json" | "form" | "formdata"
@@ -26,7 +26,7 @@ export const serverRequest = async (
       credentials: "include",
     };
   
-    if (method === "post" || method === "put") {
+    if (method === "post" || method === "put" || method === "delete") {
       if (type === "json") {
         options.body = JSON.stringify({ ...data });
       } else if (type === "form") {

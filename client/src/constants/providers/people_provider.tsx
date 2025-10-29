@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
-import type { AllUsersType, Response, User } from "../types";
+import type { AllUsersType, Response } from "../types";
 import { fetchAllUsers } from "../user/controller";
+import { useChatProvider } from "./chatProvider";
 
 
 interface PeopleContextType {
@@ -8,19 +9,18 @@ interface PeopleContextType {
     fetchUsers: boolean;
     setFetchUsers: Dispatch<SetStateAction<boolean>>;
     setPage: Dispatch<SetStateAction<number>>;
-    nameFilter: string;
-    setNameFilter: Dispatch<SetStateAction<string>>;
 }
 
 const PeopleContext = createContext<PeopleContextType | null>(null);
 
 export const PeopleProvider = ({ children }: { children: ReactNode }) => {
 
+    const { nameFilter } = useChatProvider();
+
     //get all users
     const [allUsers, setAllusers] = useState<AllUsersType | undefined>(undefined);
     const [fetchUsers, setFetchUsers] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
-    const [nameFilter, setNameFilter] = useState<string>("");
 
     useEffect(() => {
         if(!fetchUsers) return;
@@ -42,8 +42,6 @@ export const PeopleProvider = ({ children }: { children: ReactNode }) => {
             fetchUsers,
             setFetchUsers,
             setPage,
-            nameFilter,
-            setNameFilter
         }}>
             {children}
         </PeopleContext.Provider>

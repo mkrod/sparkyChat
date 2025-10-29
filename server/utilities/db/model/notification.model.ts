@@ -5,9 +5,10 @@ export interface Notification {
   type: "new_friend_request" | "friend_notification" | "message" | "others";
   title: string;
   content: string;
+  read: boolean; // ✅ new field
   metadata?: {
     friend?: {
-      user_id: string; // the other user's id (e.g. sender)
+      user_id: string;
     };
   };
   createdAt?: Date;
@@ -23,6 +24,7 @@ const notificationSchema = new Schema<Notification>(
     },
     title: { type: String, required: true },
     content: { type: String, required: true },
+    read: { type: Boolean, default: false }, // ✅ added
     metadata: {
       friend: {
         user_id: { type: String },

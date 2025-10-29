@@ -98,7 +98,7 @@ const MessageListcard: FC<Props> = ({ data, userClick }): JSX.Element => {
             </div>
             <div onClick={() => userClick ? userClick(data.otherPartyData.user_id) : null} className="message_list_card_content_name_container">
                 <div className="message_list_card_content_user_name_container">
-                    <span className='message_list_card_content_user_name'>{name.length > 15 ? `${name.slice(0, 16)}...` : name}</span>
+                    <span className='message_list_card_content_user_name'>{name}</span>
                 </div>
                 {userTyping ?
                     (<div className='message_list_card_content_typing_container'>

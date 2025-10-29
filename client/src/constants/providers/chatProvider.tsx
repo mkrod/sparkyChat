@@ -16,6 +16,8 @@ interface ChatContextType {
     userScheme: Scheme;
     setUserScheme: Dispatch<SetStateAction<Scheme>>;
     switchScheme: () => void;
+    nameFilter: string;
+    setNameFilter: Dispatch<SetStateAction<string>>;
 }
 
 
@@ -68,6 +70,10 @@ export const ChatProvider : FC<ChatProviderProps> = ({ children }) => {
     /////////////////////////////////////////////////////////////////
     const [activity, setActivity] = useState<boolean>(true);
 
+    //////////// for friend interaction page screens ///////
+    const [nameFilter, setNameFilter] = useState<string>("");
+    
+
 
   return (
     <ChatContext.Provider 
@@ -78,7 +84,9 @@ export const ChatProvider : FC<ChatProviderProps> = ({ children }) => {
         setActivity,
         userScheme,
         setUserScheme,
-        switchScheme
+        switchScheme,
+        nameFilter,
+        setNameFilter
     }}>
         { children }
     </ChatContext.Provider>

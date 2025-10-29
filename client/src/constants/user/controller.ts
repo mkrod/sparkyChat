@@ -27,11 +27,38 @@ export const getTypingList = async (): Promise<Response> => {
     return response;
 }
 
-export const fetchAllUsers = async (page : number, search_term: string): Promise<Response> => {
+export const fetchAllUsers = async (page: number, search_term: string): Promise<Response> => {
     const response: Response = await serverRequest("get", "user/all", { page, search_term });
     return response;
 }
 
-export const addUserAsFriend = async (friend_id: string): Promise<Response> => {
-    return await serverRequest("put", "user/add/friend", { friend_id }, "json") as Response;
-}
+
+// 📩 Send a friend request
+export const sendFriendRequest = async (friend_id: string): Promise<Response> => {
+    return await serverRequest("put", "user/send/request", { friend_id }, "json") as Response;
+};
+
+// ❌ Cancel a sent friend request
+export const cancelSentRequest = async (friend_id: string): Promise<Response> => {
+    return await serverRequest("delete", "user/cencel/user/request", { friend_id }, "json") as Response;
+};
+
+// ✅ Accept a friend request
+export const acceptUserRequest = async (friend_id: string): Promise<Response> => {
+    return await serverRequest("put", "user/accept/user/request", { friend_id }, "json") as Response;
+};
+
+// 🚫 Decline a friend request
+export const declineUserRequest = async (friend_id: string): Promise<Response> => {
+    return await serverRequest("delete", "user/decline/user/request", { friend_id }, "json") as Response;
+};
+
+// 📥 Fetch all friend requests (received)
+export const fetchAllUserRequests = async (): Promise<Response> => {
+    return await serverRequest("get", "user/requests") as Response;
+};
+
+// 👥 Fetch all user friends
+export const fetchUserFriends = async (): Promise<Response> => {
+    return await serverRequest("get", "user/friends") as Response;
+};

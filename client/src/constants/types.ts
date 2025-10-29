@@ -132,14 +132,18 @@ export interface UserListTab {
 
 export interface UserList extends User {
     presence: Presence;
+    friends: boolean,
+    requested: boolean,
+    incoming_request: boolean,
+    mutual_friends: string[];
 }
 
 export interface AllUsersType {
-    "page": number,
-    "perPage": number,
-    "total": number,
-    "totalPages": number,
-    "from": number,
-    "to": number,
-    "results": UserList[];
+    page: number,
+    perPage: number,
+    total: number,
+    totalPages: number,
+    from: number,
+    to: number,
+    results: UserList[];
 }

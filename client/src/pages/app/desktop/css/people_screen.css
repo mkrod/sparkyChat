@@ -34,6 +34,9 @@
     border-bottom: 0.1rem solid transparent;
     transition: border-color, color ease-in-out .275s;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .user_list_tab_container.active{
