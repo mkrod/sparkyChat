@@ -54,11 +54,15 @@ export const declineUserRequest = async (friend_id: string): Promise<Response> =
 };
 
 // 📥 Fetch all friend requests (received)
-export const fetchAllUserRequests = async (): Promise<Response> => {
-    return await serverRequest("get", "user/requests") as Response;
+export const fetchAllUserRequests = async (page: number, search_term: string): Promise<Response> => {
+    return await serverRequest("get", "user/requests", { page, search_term }) as Response;
 };
 
 // 👥 Fetch all user friends
-export const fetchUserFriends = async (): Promise<Response> => {
-    return await serverRequest("get", "user/friends") as Response;
+export const fetchUserFriends = async (page: number, search_term: string): Promise<Response> => {
+    return await serverRequest("get", "user/friends", { page, search_term }) as Response;
 };
+
+export const removeUserAsFriend = async (friend_id: string) => {
+    return await serverRequest("delete", "user/remove/friend", { friend_id }, "json") as Response;
+}

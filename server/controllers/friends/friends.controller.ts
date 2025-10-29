@@ -6,9 +6,10 @@ import {
 import { notificationModel } from "../../utilities/db/model/notification.model.js";
 import { onlineUsersModel } from "../../utilities/db/model/onlineUsers.js";
 import { getIoNamespace } from "../../utilities/websocket/ws_conn.js";
+import { usersModel } from "../../utilities/db/model/users.js";
 
 // Helper: send socket event if user is online
-const sendSocketEvent = async (user_id: string, event: string, data: any) => {
+const sendSocketEvent = async (user_id: string, event: string, data?: any) => {
   const io = getIoNamespace();
   const online = await onlineUsersModel.findOne({ user_id });
   if (online && online.status !== "offline" && online.socket_id) {
@@ -176,18 +177,120 @@ export const declineUserRequest = async (req: Request, res: Response) => {
   }
 };
 
+
+
 // 📥 Fetch all user requests
 export const fetchAllUserRequests = async (req: Request, res: Response) => {
   const { user_id } = req.session;
+  const pageNumber = parseInt(req.query.page as string, 10) || 1;
+  const limitNumber = 50;
+
   if (!user_id)
     return res.status(400).json({ status: 400, message: "Missing user_id" });
 
   try {
-    const requests = await friendRequestModel.find({ requested: user_id });
+    const requestsPipeline: any[] = [
+      { $match: { requested: user_id } },
+      { $sort: { created_at: -1 } },
+      { $skip: (pageNumber - 1) * limitNumber },
+      { $limit: limitNumber },
+
+      // join requester user details
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "user_id",
+          as: "requester",
+        },
+      },
+      { $unwind: "$requester" },
+
+      // presence of requester
+      {
+        $lookup: {
+          from: "onlineusers",
+          localField: "user_id",
+          foreignField: "user_id",
+          as: "presence",
+        },
+      },
+      { $addFields: { "requester.presence": { $arrayElemAt: ["$presence", 0] } } },
+
+      // mutual friends
+      {
+        $lookup: {
+          from: "friends",
+          let: { requesterId: "$user_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$user_id", user_id] } } },
+            { $project: { friend_list: "$friend_list.user_id" } },
+            {
+              $lookup: {
+                from: "friends",
+                let: { currentFriends: "$friend_list" },
+                pipeline: [
+                  { $match: { $expr: { $eq: ["$user_id", "$$requesterId"] } } },
+                  {
+                    $project: {
+                      mutual_friends: {
+                        $filter: {
+                          input: "$friend_list.user_id",
+                          as: "fid",
+                          cond: { $in: ["$$fid", "$$currentFriends"] },
+                        },
+                      },
+                    },
+                  },
+                ],
+                as: "mutuals",
+              },
+            },
+            {
+              $project: {
+                mutual_friends: {
+                  $ifNull: [{ $arrayElemAt: ["$mutuals.mutual_friends", 0] }, []],
+                },
+              },
+            },
+          ],
+          as: "mutualData",
+        },
+      },
+      {
+        $addFields: {
+          mutual_friends: {
+            $ifNull: [{ $arrayElemAt: ["$mutualData.mutual_friends", 0] }, []],
+          },
+        },
+      },
+
+      // project clean
+      {
+        $project: {
+          "requester.password": 0,
+          "requester.sessions": 0,
+          "mutualData": 0,
+          "presence": 0,
+        },
+      },
+    ];
+
+    const results = await friendRequestModel.aggregate(requestsPipeline);
+    const total = await friendRequestModel.countDocuments({ requested: user_id });
+
     res.status(200).json({
       status: 200,
       message: "Friend requests fetched successfully",
-      data: requests,
+      data: {
+        page: pageNumber,
+        perPage: limitNumber,
+        total,
+        totalPages: Math.ceil(total / limitNumber),
+        from: (pageNumber - 1) * limitNumber + 1,
+        to: Math.min(pageNumber * limitNumber, total),
+        results,
+      },
     });
   } catch (err) {
     console.error("Error fetching friend requests:", err);
@@ -195,21 +298,187 @@ export const fetchAllUserRequests = async (req: Request, res: Response) => {
   }
 };
 
+
 // 👥 Fetch all confirmed friends
 export const fetchUserFriends = async (req: Request, res: Response) => {
   const { user_id } = req.session;
+  const pageNumber = parseInt(req.query.page as string, 10) || 1;
+  const limitNumber = 50;
+
   if (!user_id)
     return res.status(400).json({ status: 400, message: "Missing user_id" });
 
   try {
     const userFriends = await friendModel.findOne({ user_id });
+    const friendList = userFriends?.friend_list?.map((f: any) => f.user_id) || [];
+
+    if (!friendList.length) {
+      return res.status(200).json({
+        status: 200,
+        message: "No friends found",
+        data: { results: [] },
+      });
+    }
+
+    const pipeline: any[] = [
+      { $match: { user_id: { $in: friendList } } },
+      { $sort: { created_at: -1 } },
+      { $skip: (pageNumber - 1) * limitNumber },
+      { $limit: limitNumber },
+
+      // presence
+      {
+        $lookup: {
+          from: "onlineusers",
+          localField: "user_id",
+          foreignField: "user_id",
+          as: "presence",
+        },
+      },
+      { $addFields: { presence: { $arrayElemAt: ["$presence", 0] } } },
+
+      // mutual friends
+      {
+        $lookup: {
+          from: "friends",
+          let: { friendId: "$user_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$user_id", user_id] } } },
+            { $project: { friend_list: "$friend_list.user_id" } },
+            {
+              $lookup: {
+                from: "friends",
+                let: { currentFriends: "$friend_list" },
+                pipeline: [
+                  { $match: { $expr: { $eq: ["$user_id", "$$friendId"] } } },
+                  {
+                    $project: {
+                      mutual_friends: {
+                        $filter: {
+                          input: "$friend_list.user_id",
+                          as: "fid",
+                          cond: { $in: ["$$fid", "$$currentFriends"] },
+                        },
+                      },
+                    },
+                  },
+                ],
+                as: "mutuals",
+              },
+            },
+            {
+              $project: {
+                mutual_friends: {
+                  $ifNull: [{ $arrayElemAt: ["$mutuals.mutual_friends", 0] }, []],
+                },
+              },
+            },
+          ],
+          as: "mutualData",
+        },
+      },
+      {
+        $addFields: {
+          mutual_friends: {
+            $ifNull: [{ $arrayElemAt: ["$mutualData.mutual_friends", 0] }, []],
+          },
+        },
+      },
+
+      // cleanup
+      {
+        $project: {
+          password: 0,
+          sessions: 0,
+          mutualData: 0,
+        },
+      },
+    ];
+
+    // ✅ use users collection, not friendModel again
+    const results = await usersModel.aggregate(pipeline);
+
+    const total = friendList.length;
+
     res.status(200).json({
       status: 200,
       message: "Friends fetched successfully",
-      data: userFriends?.friend_list || [],
+      data: {
+        page: pageNumber,
+        perPage: limitNumber,
+        total,
+        totalPages: Math.ceil(total / limitNumber),
+        from: (pageNumber - 1) * limitNumber + 1,
+        to: Math.min(pageNumber * limitNumber, total),
+        results,
+      },
     });
   } catch (err) {
     console.error("Error fetching user friends:", err);
     res.status(500).json({ status: 500, message: "Failed to fetch friends" });
+  }
+};
+
+
+export const removeUserAsFriend = async (req: Request, res: Response) => {
+  const { user_id } = req.session;
+  const { friend_id } = req.body;
+
+  if (!user_id || !friend_id) {
+    return res.status(400).json({ status: 400, message: "Missing user_id or friend_id" });
+  }
+
+  try {
+    // 🧩 Remove from both users' friend lists
+    await friendModel.updateOne(
+      { user_id },
+      { $pull: { friend_list: { user_id: friend_id } } }
+    );
+
+    await friendModel.updateOne(
+      { user_id: friend_id },
+      { $pull: { friend_list: { user_id } } }
+    );
+
+    // 🗑️ Remove any existing friend requests between both users
+    await friendRequestModel.deleteMany({
+      $or: [
+        { user_id, requested: friend_id },
+        { user_id: friend_id, requested: user_id },
+      ],
+    });
+
+    // 🔔 Create notification for the removed friend
+    const notification = await notificationModel.create({
+      user_id: friend_id, // receiver
+      type: "friend_notification",
+      title: "Friend removed",
+      content: `User ${user_id} has removed you as a friend.`,
+      read: false,
+      metadata: {
+        friend: { user_id },
+      },
+      created_at: new Date(),
+    });
+
+    // 🚀 Emit real-time event to the removed user's socket
+    const data = {
+      user_id,
+      message: "You were removed from the friend list",
+      notification,
+    };
+    sendSocketEvent(friend_id, "friend_removed", data);
+
+    return res.status(200).json({
+      status: 200,
+      message: "Friend removed successfully",
+      data: { friend_id },
+    });
+  } catch (err) {
+    console.error("Error removing friend:", err);
+    return res.status(500).json({
+      status: 500,
+      message: "Failed to remove friend",
+    });
   }
 };

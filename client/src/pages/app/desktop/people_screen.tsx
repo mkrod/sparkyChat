@@ -8,6 +8,8 @@ import "./css/people_screen.css";
 import UsersList from '@/components/app/people/users_list';
 import { usePeopleProvider } from '@/constants/providers/people_provider';
 import ActivityIndicator from '@/components/utility/activity_indicator';
+import RequestsList from '@/components/app/people/request_list';
+import FriendsList from '@/components/app/people/friend_list';
 
 const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = ({ visibitySetter }): JSX.Element => {
 
@@ -72,6 +74,8 @@ const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = 
 
             <div ref={containerRef} className='user_tab_screens_container'>
                 {activeTab.code === "add_friends" && <UsersList container={containerRef.current} />}
+                {activeTab.code === "requests" && <RequestsList container={containerRef.current} />}
+                {activeTab.code === "friends" && <FriendsList container={containerRef.current} />}
             </div>
         </div>
     )

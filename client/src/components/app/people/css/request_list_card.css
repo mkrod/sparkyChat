@@ -1,0 +1,17 @@
+.user_list_card_button_second{
+    border: 0.5px solid transparent;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    height: 2rem;
+    min-width: 2rem;
+    padding: 0 0.4rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.65rem;
+    gap: 0.4rem;
+    font-family: Quicksand, sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+}

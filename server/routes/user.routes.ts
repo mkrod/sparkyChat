@@ -2,7 +2,7 @@ import express, { type Router } from "express";
 import { getAllUsers, getUserData } from "../controllers/user/user.controllers.js";
 import { getMutualChat, getUserMessageList } from "../controllers/messages/message.controller.js";
 import { getAllUsersPresence } from "../controllers/presence/presence.controller.js";
-import { acceptUserRequest, cancelSentRequest, declineUserRequest, fetchAllUserRequests, fetchUserFriends, sendFriendRequest } from "../controllers/friends/friends.controller.js";
+import { acceptUserRequest, cancelSentRequest, declineUserRequest, fetchAllUserRequests, fetchUserFriends, removeUserAsFriend, sendFriendRequest } from "../controllers/friends/friends.controller.js";
 const router: Router = express.Router();
 
 router.get("/all", getAllUsers)
@@ -19,6 +19,8 @@ router.delete("/decline/user/request", declineUserRequest);
 
 router.get("/requests", fetchAllUserRequests);
 router.get("/friends", fetchUserFriends);
+
+router.delete("/remove/friend", removeUserAsFriend);
 
 
 export default router;

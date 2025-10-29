@@ -1,23 +1,23 @@
 import { usePeopleProvider } from '@/constants/providers/people_provider'
 import { useEffect, type FC, type JSX } from 'react'
-import UserListCard from './user_list_card';
-import type { UserList } from '@/constants/types';
+import type { FriendList } from '@/constants/types';
 import "./css/user_list.css";
 import ActivityIndicator from '@/components/utility/activity_indicator';
 import EmptyList from './empty_list';
+import FriendListCard from './friend_list_card';
 
 interface Props {
     container: HTMLDivElement | null;
 }
 
-const UsersList: FC<Props> = ({ container }): JSX.Element => {
+const FriendsList: FC<Props> = ({ container }): JSX.Element => {
 
 
 
-    const { allUsers, fetchUsers, setFetchUsers, setPage } = usePeopleProvider();
+    const { friends, fetchFriends, setFetchFriends, setFriendsPage } = usePeopleProvider();
     useEffect(() => {
-        setFetchUsers(true) //on mount, fetch
-        return () => setFetchUsers(false); // clean up
+        setFetchFriends(true) //on mount, fetch
+        return () => setFetchFriends(false); // clean up
     }, [])
 
     useEffect(() => {
@@ -28,23 +28,23 @@ const UsersList: FC<Props> = ({ container }): JSX.Element => {
             const { scrollHeight, scrollTop, clientHeight } = container;
 
             if (scrollHeight <= (scrollTop + clientHeight)) { //bottom
-                if (fetchUsers || !allUsers) return;
-                if (allUsers.totalPages <= allUsers.page) return;
-                setPage((prev) => {
-                    if (prev < allUsers.totalPages) {
+                if (fetchFriends || !friends) return;
+                if (friends.totalPages <= friends.page) return;
+                setFriendsPage((prev) => {
+                    if (prev < friends.totalPages) {
                         container.scrollTo({ top: 2, behavior: "instant" });
                         return prev + 1
                     } else {
                         return prev
                     }
                 });
-                setFetchUsers(true);
+                setFetchFriends(true);
             }
 
             if (scrollTop === 0) { //top
-                if (fetchUsers || !allUsers) return;
-                if (allUsers.page === 1) return;
-                setPage((prev) => {
+                if (fetchFriends || !friends) return;
+                if (friends.page === 1) return;
+                setFriendsPage((prev) => {
                     if (prev > 1) {
                         container.scrollTo({ top: 0, behavior: "instant" });
                         return prev - 1
@@ -52,27 +52,27 @@ const UsersList: FC<Props> = ({ container }): JSX.Element => {
                         return prev
                     }
                 });
-                setFetchUsers(true);
+                setFetchFriends(true);
             }
         }
         container.addEventListener("scroll", handleScroll);
         return () => container.removeEventListener("scroll", handleScroll);
-    }, [container, allUsers]);
+    }, [container, friends]);
 
 
     return (
         <div className='user_list_container'>
             <div className="user_list_list_container">
-                {
-                    allUsers?.results.map((user: UserList, idx: number) => (
-                        <UserListCard key={`${idx} ${user.user_id}`} user={user} />
+                {friends?.results && friends?.results.length > 0 && 
+                    friends?.results.map((f: FriendList, idx: number) => (
+                        <FriendListCard key={`${idx} ${f.user_id}`} friend={f} />
                     ))
                 }
                 {
-                    allUsers?.total === 0 && <EmptyList title="No pending Request" />
+                    friends?.results.length === 0 && <EmptyList title="You have no Friend" />
                 }
             </div>
-            {fetchUsers &&
+            {fetchFriends &&
                 (
                     <div className="user_list_pagination_controller_container">
                         <ActivityIndicator size='small' color='var(--app-accent)' style='spin' />
@@ -83,4 +83,4 @@ const UsersList: FC<Props> = ({ container }): JSX.Element => {
     )
 }
 
-export default UsersList
+export default FriendsList

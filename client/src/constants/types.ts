@@ -147,3 +147,37 @@ export interface AllUsersType {
     to: number,
     results: UserList[];
 }
+
+interface Requester extends User {
+    presence: Presence
+}
+
+export interface RequestList{
+    requester: Requester;
+    mutual_friends: string[];
+}
+
+export interface AllRequestsType {
+    page: number,
+    perPage: number,
+    total: number,
+    totalPages: number,
+    from: number,
+    to: number,
+    results: RequestList[];
+}
+
+export interface FriendList extends User {
+    presence: Presence;
+    mutual_friends: string[];
+}
+
+export interface AllFriendsType{
+    page: number,
+    perPage: number,
+    total: number,
+    totalPages: number,
+    from: number,
+    to: number,
+    results: FriendList[];
+}
