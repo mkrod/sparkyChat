@@ -128,6 +128,7 @@ export interface PreviewMediaData {
 export interface UserListTab {
     label: string;
     code: "add_friends" | "friends" | "groups" | "requests";
+    count?: Promise<number>;
 }
 
 export interface UserList extends User {

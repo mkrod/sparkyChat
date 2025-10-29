@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type Dispatch, type Rea
 import type { AllFriendsType, AllRequestsType, AllUsersType, Response } from "../types";
 import { fetchAllUserRequests, fetchAllUsers, fetchUserFriends } from "../user/controller";
 import { useChatProvider } from "./chatProvider";
+import socket from "../socket.io/socket_conn";
 
 
 interface PeopleContextType {
@@ -65,7 +66,7 @@ export const PeopleProvider = ({ children }: { children: ReactNode }) => {
 
     //////friends
     const [friends, setFriends] = useState<AllFriendsType | undefined>(undefined);
-    const [fetchFriends, setFetchFriends] = useState<boolean>(false);
+    const [fetchFriends, setFetchFriends] = useState<boolean>(true);
     const [friendsPage, setFriendsPage] = useState<number>(1);
 
     useEffect(() => {
@@ -82,6 +83,26 @@ export const PeopleProvider = ({ children }: { children: ReactNode }) => {
 
     }, [fetchFriends, friendRequests, nameFilter]);
 
+
+    /// events trigger
+    ////event triggers
+
+    useEffect(() => {
+        const handleRequestEvent = () => {
+            setFetchFriendRequests(true);
+            setFetchUsers(true);
+        }
+        const handleFriendEvent = () => {
+            setFetchFriends(true);
+            setFetchUsers(true);
+        }
+        socket.on("friend_request", handleRequestEvent);
+        socket.on("friend", handleFriendEvent);
+        return () => {
+            socket.off("friend_request", handleRequestEvent);
+            socket.off("friend", handleFriendEvent);
+        }
+    }, []);
 
     return (
         <PeopleContext.Provider value={{

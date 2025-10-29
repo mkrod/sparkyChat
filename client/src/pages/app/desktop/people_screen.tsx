@@ -15,7 +15,7 @@ const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = 
 
     const { messagesList } = useDataProvider();
     const { activeColor, nameFilter, setNameFilter } = useChatProvider();
-    const { fetchUsers, setFetchUsers } = usePeopleProvider();
+    const { fetchUsers, setFetchUsers, friendRequests } = usePeopleProvider();
     const searchRef = useRef<HTMLInputElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     //const [searchTerm, setSearchTerm] = useState<string>("")
@@ -41,7 +41,7 @@ const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = 
                         }}
                         onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
                             //console.log(e.key)
-                            if(e.key === "Enter"){
+                            if (e.key === "Enter") {
                                 setFetchUsers(true);
                             }
                         }}
@@ -68,6 +68,10 @@ const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = 
                         className={`user_list_tab_container ${isActiveTab(ut) ? "active" : ""}`}
                     >
                         {ut.label}
+                        {ut.code === "requests" && friendRequests?.results && friendRequests.results.length > 0 && (
+                            <div className='user_list_tabs_count'>
+                                {friendRequests.results.length}
+                            </div>)}
                     </div>
                 ))}
             </div>

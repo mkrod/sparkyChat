@@ -41,6 +41,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
       read: false,
     });
 
+    await sendSocketEvent(friend_id, "friend_request");
     await sendSocketEvent(friend_id, "new_notification", notification);
 
     res.status(200).json({
@@ -76,6 +77,7 @@ export const cancelSentRequest = async (req: Request, res: Response) => {
       read: false,
     });
 
+    await sendSocketEvent(friend_id, "friend_request");
     await sendSocketEvent(friend_id, "new_notification", notification);
 
     res.status(200).json({ status: 200, message: "Friend request cancelled" });
@@ -132,6 +134,8 @@ export const acceptUserRequest = async (req: Request, res: Response) => {
       },
     ]);
 
+    await sendSocketEvent(friend_id, "friend");
+    await sendSocketEvent(friend_id, "friend_request"); // update his request list
     await sendSocketEvent(friend_id, "new_notification", notif1);
     await sendSocketEvent(user_id, "new_notification", notif2);
 
@@ -168,6 +172,7 @@ export const declineUserRequest = async (req: Request, res: Response) => {
       read: false,
     });
 
+    await sendSocketEvent(friend_id, "friend_request");
     await sendSocketEvent(friend_id, "new_notification", notification);
 
     res.status(200).json({ status: 200, message: "Friend request declined" });
@@ -295,6 +300,27 @@ export const fetchAllUserRequests = async (req: Request, res: Response) => {
   } catch (err) {
     console.error("Error fetching friend requests:", err);
     res.status(500).json({ status: 500, message: "Failed to fetch friend requests" });
+  }
+};
+
+export const countFriendsRequest = async (req: Request, res: Response) => {
+  const { user_id } = req.session;
+
+  if (!user_id) {
+    return res.status(400).json({ status: 400, message: "Missing user_id" });
+  }
+
+  try {
+    const count = await friendRequestModel.countDocuments({ requested: user_id });
+
+    res.status(200).json({
+      status: 200,
+      message: "Friend request count fetched successfully",
+      data: { count },
+    });
+  } catch (err) {
+    console.error("Error counting friend requests:", err);
+    res.status(500).json({ status: 500, message: "Failed to count friend requests" });
   }
 };
 
