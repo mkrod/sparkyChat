@@ -23,6 +23,7 @@ const MessageSchema = new Schema<IMessage>({
   media: {
     content: { type: String },
     caption: { type: String },
+    duration: { type: Number },
     size: { type: Number },
     type: { type: String },
     originalName: { type: String },

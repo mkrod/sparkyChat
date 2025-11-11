@@ -14,7 +14,7 @@ interface Prop {
 }
 
 const UserListCard: FC<Prop> = ({ user }): JSX.Element => {
-  const { activeColor } = useChatProvider();
+  const { isMobile, activeColor } = useChatProvider();
   const { setFetchUsers } = usePeopleProvider();
   const names = `${user.name.first} ${user.name.last}`;
   const [dpLoading, setDpLoading] = useState<boolean>(true);
@@ -53,13 +53,13 @@ const UserListCard: FC<Prop> = ({ user }): JSX.Element => {
       case 'pending':
         // accept friend request
         acceptUserRequest(user.user_id)
-        .then((res) => {
-          if (res.status === 200) {
-            //success
-            //refresh
-            setFetchUsers(true);
-          }
-        })
+          .then((res) => {
+            if (res.status === 200) {
+              //success
+              //refresh
+              setFetchUsers(true);
+            }
+          })
         break;
       case 'none':
         // send friend request
@@ -109,11 +109,13 @@ const UserListCard: FC<Prop> = ({ user }): JSX.Element => {
   //1, press button
   //2, server return status 200 on success
   //3, callback .then() call setFetchUser(true)
-       //to update list
+  //to update list
   //4, useEffect on user changed, falsify the Loading aninmation by setIsAction(false);
 
   return (
-    <div style={{ borderColor: activeColor.fadedBorder }} className='user_list_card_container'>
+    <div style={{
+      borderColor: isMobile ? "" : activeColor.fadedBorder
+    }} className='user_list_card_container'>
       <div
         style={{
           borderColor: activeColor.fadedBorder,

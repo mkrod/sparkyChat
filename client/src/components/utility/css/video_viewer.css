@@ -1,0 +1,80 @@
+.app_video_utility_thumbnail {
+    transition: transform 0.2s ease-in-out;
+    object-fit: cover;
+}
+
+.app_video_utility_modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.app_video_utility_play_button{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--app-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 50%;
+}
+
+.app_video_utility_modal_topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+}
+
+.app_video_utility_icon {
+    margin-left: auto;
+    height: 2rem;
+    width: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.app_utility_video {
+    max-width: 90%;
+    max-height: 85%;
+    border-radius: 8px;
+    background: black;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.app_utility_caption {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: white;
+    font-size: 1rem;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+}
+
+.app_utility_toggle_caption {
+    margin-left: 6px;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}

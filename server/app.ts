@@ -13,6 +13,7 @@ import sessionRoutes from "./routes/session.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import proxyRoutes from "./routes/proxy.routes.js";
 import messageRoutes from "./routes/message.routes.js";
+import callRoutes from "./routes/call.routes.js";
 
 ///////////////////////////////////////
 ///////////////custom middleware////////////////////////
@@ -51,20 +52,37 @@ wsConfig(server);
 //////////////////// Static files ///////////////////
 app.use("/", express.static(path.join(__dirname, "public"), { index: "index.html" }));
 // Serve uploads separately for JS previews
-app.use("/upload", express.static(path.join(__dirname, "public/uploads"), {
+/*app.use("/upload", express.static(path.join(__dirname, "public/uploads"), {
     maxAge: "1y",
     immutable: true
 }));
-
+app.use("/thumbnail", express.static(path.join(__dirname, "public/thumbnails"), {
+    maxAge: "1y",
+    immutable: true
+}));
+*/
 //////////////////// Routes /////////////////////////
 app.use("/api/auth", authRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/proxy", proxyRoutes);
 app.use("/api/message", messageRoutes);
+app.use("/api/call", callRoutes)
 
 // Health check
 app.get("/api/health", (_, res) => res.sendStatus(200));
+
+/////  remove on production
+app.use("/api/user/static", (req, res) => {
+    if(!req.query.user_id) return res.send("Please enter a static Id to login");
+    const userId = Array.isArray(req.query.user_id) ? req.query.user_id[0] : req.query.user_id;
+    if (typeof userId === "string") {
+        req.session.user_id = userId;
+        res.send("Static user loggedIn");
+    } else {
+        return res.status(400).send("Invalid user_id");
+    }
+})
 
 //////////////////// Error handling //////////////////
 process.on("uncaughtException", (err) => console.error("Uncaught Exception: ", err));

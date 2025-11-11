@@ -9,14 +9,17 @@ interface PeopleContextType {
     allUsers: AllUsersType | undefined;
     fetchUsers: boolean;
     setFetchUsers: Dispatch<SetStateAction<boolean>>;
+    page: number;
     setPage: Dispatch<SetStateAction<number>>;
     friendRequests: AllRequestsType | undefined;
     fetchFriendRequests: boolean;
     setFetchFriendRequests: Dispatch<SetStateAction<boolean>>;
+    requestPage: number;
     setRequestPage: Dispatch<SetStateAction<number>>;
     friends: AllFriendsType | undefined;
     fetchFriends: boolean;
     setFetchFriends: Dispatch<SetStateAction<boolean>>;
+    friendsPage: number;
     setFriendsPage: Dispatch<SetStateAction<number>>;
 }
 
@@ -74,7 +77,7 @@ export const PeopleProvider = ({ children }: { children: ReactNode }) => {
         fetchUserFriends(friendsPage, nameFilter)
             .then((res: Response) => {
                 setFriends(res.data as AllFriendsType)
-                console.log(res)
+                //console.log(res)
             })
             .catch((err) => console.log("Cannot fetch all friends: ", err))
             .finally(() => {
@@ -109,15 +112,15 @@ export const PeopleProvider = ({ children }: { children: ReactNode }) => {
             allUsers,
             fetchUsers,
             setFetchUsers,
-            setPage,
+            page, setPage,
             friendRequests,
             fetchFriendRequests,
             setFetchFriendRequests,
-            setRequestPage,
+            requestPage, setRequestPage,
             friends,
             fetchFriends,
             setFetchFriends,
-            setFriendsPage
+            friendsPage, setFriendsPage
         }}>
             {children}
         </PeopleContext.Provider>

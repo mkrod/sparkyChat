@@ -1,32 +1,30 @@
 import { AppLogo, Appname, serverURL } from '@/constants'
-import { useEffect, useState, type FC, type JSX } from 'react'
+import { useState, type FC, type JSX } from 'react'
 import "./css/navbar.css";
 import { useConnProvider } from '@/constants/providers/conn_provider';
 import { TbMessage2 } from 'react-icons/tb';
-import { LuBell, LuPhone, LuSettings2 } from 'react-icons/lu';
-import { RxUpdate } from 'react-icons/rx';
+import { LuBell, LuPhone } from 'react-icons/lu';
 import { BiExit } from 'react-icons/bi';
 import { useChatProvider } from '@/constants/providers/chatProvider';
 import ActivityIndicator from '../utility/activity_indicator';
-import { useDataProvider } from '@/constants/providers/data_provider';
-import type { MessageList, NotificationCounts } from '@/constants/types';
-import { defaultNotificationCounts } from '@/constants/vars';
+import { useNotificationProvider } from '@/constants/providers/notification_provider';
+import { NavLinks } from '@/constants/vars';
+import type { NotificationCountsIndex } from '@/constants/types';
+import { useNavigate } from 'react-router';
+import ImageViewer from '../utility/viewable_image';
 
-const DesktopNavbar: FC = (): JSX.Element => {
+
+type Props = { path: string }
+const DesktopNavbar: FC<Props> = ({ path }): JSX.Element => {
     const { user } = useConnProvider();
     const { activeColor, userScheme, switchScheme } = useChatProvider();
-    const { messagesList } = useDataProvider();
     const [dpIsLoading, setDpIsLoading] = useState<boolean>(true);
-    const [notificationCounts, setNotificationCounts] = useState<NotificationCounts>(defaultNotificationCounts);
-    useEffect(() => {
-        if (messagesList.length === 0) return;
-        let messages = 0, calls = 0, alerts = 0;
-        messagesList.map((ml: MessageList) => messages += ml.unreadCount);
-        const data = {
-            messages, calls, alerts
-        }
-        setNotificationCounts(data);
-    }, [messagesList]);
+    const { notificationCounts } = useNotificationProvider();
+    const order = ["Chats", "Status", "Calls", "Settings"];
+    const navlinks = NavLinks.sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
+    const navigate = useNavigate();
+
+
 
 
     return (
@@ -55,7 +53,17 @@ const DesktopNavbar: FC = (): JSX.Element => {
                                 />
                             </div>
                         )}
-                        <img onLoad={() => setTimeout(() => setDpIsLoading(false), 2000)} src={`${serverURL}/proxy?url=${encodeURIComponent(user.picture)}`} className='app_navbar_user_picture' />
+                        <ImageViewer 
+                         src={`${serverURL}/proxy?url=${encodeURIComponent(user.picture)}`}
+                         options={{
+                            thumbnailClassName: "app_navbar_user_picture",
+                            height: "100%",
+                            width: "100%",
+                            rounded: true
+                         }}
+                         onload={() => setTimeout(() => setDpIsLoading(false), 2000)}
+                        />
+                        {/*<img onLoad={() => setTimeout(() => setDpIsLoading(false), 2000)} src={`${serverURL}/proxy?url=${encodeURIComponent(user.picture)}`} className='app_navbar_user_picture' />*/}
                     </div>
                     <div className='app_navbar_user_details_container'>
                         <div className='app_navbar_user_details_names'>
@@ -81,42 +89,28 @@ const DesktopNavbar: FC = (): JSX.Element => {
 
 
             <div className="app_navbar_links_container">
-                <div className="app_navbar_link_container">
-                    <div className='app_navbar_link_icon_container'>
-                        <TbMessage2 color='green' />
+                {navlinks.map((bar, index) => (
+                    <div
+                        onClick={() => navigate(bar.path)}
+                        key={index}
+                        className="app_navbar_link_container"
+                    >
+                        {path.startsWith(bar.path) && <div className='app_navbar_link_active'></div>}
+                        <div className='app_navbar_link_icon_container'>
+                            {bar.icon}
+                        </div>
+                        <div className='app_navbar_link_label_container'>
+                            <span className='app_navbar_label'>{bar.name}</span>
+                            {notificationCounts[bar.name.toLowerCase() as NotificationCountsIndex] > 0 &&
+                                (
+                                    <div className="app_navbar_notification_count">
+                                        {notificationCounts[bar.name.toLowerCase() as NotificationCountsIndex]}
+                                    </div>
+                                )
+                            }
+                        </div>
                     </div>
-                    <div className='app_navbar_link_label_container'>
-                        <span className='app_navbar_label'>Chats</span>
-                        {notificationCounts.messages > 0 && <div className='app_navbar_notification_count'>{notificationCounts.messages}</div>}
-                    </div>
-                </div>
-                <div className="app_navbar_link_container">
-                    <div className='app_navbar_link_icon_container'>
-                        <RxUpdate color='blue' />
-                    </div>
-                    <div className='app_navbar_link_label_container'>
-                        <span className='app_navbar_label'>Status</span>
-                        <div className='app_navbar_notification_count'></div>
-                    </div>
-                </div>
-                <div className="app_navbar_link_container">
-                    <div className='app_navbar_link_icon_container'>
-                        <LuPhone color='#940063' />
-                    </div>
-                    <div className='app_navbar_link_label_container'>
-                        <span className='app_navbar_label'>Calls</span>
-                        <div className='app_navbar_notification_count'></div>
-                    </div>
-                </div>
-                <div className="app_navbar_link_container">
-                    <div className='app_navbar_link_icon_container'>
-                        <LuSettings2 color='#6400a7' />
-                    </div>
-                    <div className='app_navbar_link_label_container'>
-                        <span className='app_navbar_label'>Settings</span>
-                        <div className='app_navbar_notification_count'></div>
-                    </div>
-                </div>
+                ))}
             </div>
 
             <div

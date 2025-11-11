@@ -39,7 +39,7 @@ const FilePreview: FC<Props> = ({ mediaData, removeFile, exit, activeSlideNumber
         removeFile(index);
     };
 
-    console.log(activeSlideNumber);
+    //console.log(activeSlideNumber);
 
 
     ////// component

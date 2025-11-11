@@ -10,12 +10,13 @@ import { usePeopleProvider } from '@/constants/providers/people_provider';
 import ActivityIndicator from '@/components/utility/activity_indicator';
 import RequestsList from '@/components/app/people/request_list';
 import FriendsList from '@/components/app/people/friend_list';
+import GroupsList from '@/components/app/people/groups_list';
 
 const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = ({ visibitySetter }): JSX.Element => {
 
     const { messagesList } = useDataProvider();
-    const { activeColor, nameFilter, setNameFilter } = useChatProvider();
-    const { fetchUsers, setFetchUsers, friendRequests } = usePeopleProvider();
+    const { activeColor, nameFilter, setNameFilter, isMobile } = useChatProvider();
+    const { fetchUsers, fetchFriendRequests, fetchFriends, setFetchUsers, friendRequests } = usePeopleProvider();
     const searchRef = useRef<HTMLInputElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     //const [searchTerm, setSearchTerm] = useState<string>("")
@@ -26,7 +27,9 @@ const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = 
 
     return (
         <div className='users_list_container'>
-            <div className="chat_list_header">
+            <div style={{
+                padding: isMobile ? "2rem var(--mobile-padding-hor)" : ""
+            }} className="chat_list_header">
                 <div className="chat_list_header_search_container">
                     <IoSearch color={activeColor.textFade} />
                     <input type='text'
@@ -47,7 +50,7 @@ const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = 
                         }}
                     />
                 </div>
-                {fetchUsers && <ActivityIndicator style='spin' size='small' />}
+                {(fetchUsers || fetchFriends || fetchFriendRequests) && <ActivityIndicator style='spin' color='var(--app-accent)' size='small' />}
                 {messagesList.length > 0 &&
                     (<div onClick={() => visibitySetter(false)} className="user_list_header_close">
                         close
@@ -80,6 +83,7 @@ const PeopleScreen: FC<{ visibitySetter: Dispatch<SetStateAction<boolean>> }> = 
                 {activeTab.code === "add_friends" && <UsersList container={containerRef.current} />}
                 {activeTab.code === "requests" && <RequestsList container={containerRef.current} />}
                 {activeTab.code === "friends" && <FriendsList container={containerRef.current} />}
+                {activeTab.code === "groups" && <GroupsList container={containerRef.current} />}
             </div>
         </div>
     )

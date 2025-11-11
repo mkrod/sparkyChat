@@ -16,7 +16,7 @@ interface Props {
 const RequestListCard: FC<Props> = ({ request }): JSX.Element => {
 
     const { requester } = request;
-    const { activeColor } = useChatProvider();
+    const { activeColor, isMobile } = useChatProvider();
     const { setFetchFriendRequests } = usePeopleProvider();
     const names = `${requester.name.first} ${requester.name.last}`;
     const [dpLoading, setDpLoading] = useState<boolean>(true);
@@ -52,7 +52,9 @@ const RequestListCard: FC<Props> = ({ request }): JSX.Element => {
     }
 
     return (
-        <div style={{ borderColor: activeColor.fadedBorder }} className='user_list_card_container'>
+        <div style={{
+            borderColor: isMobile ? "" : activeColor.fadedBorder
+        }} className='user_list_card_container'>
             <div
                 style={{
                     borderColor: activeColor.fadedBorder,

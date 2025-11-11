@@ -1,7 +1,9 @@
+import type { Response } from "./types";
+
 export const Appname: string = "Sparky";
 export const AppLogo: string = "/logo.png";
-export const defaultDp: string = "https://localhost:5175/default_dp.jpg";
-export const serverURL: string = "https://localhost:3000/api";
+export const defaultDp: string = "https://192.168.43.104:5175/default_dp.jpg";
+export const serverURL: string = "https://192.168.43.104:3000/api";
 export const googleClientID: string = "86436725623-dtnh7ms0ba1hp5c9hned8jefi2h9irsq.apps.googleusercontent.com";
 export const googleRedirectURI: string = `${serverURL}/auth/google/callback`;
 

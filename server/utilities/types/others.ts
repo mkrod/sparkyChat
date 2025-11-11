@@ -28,9 +28,10 @@ export interface Media {
     content: string;
     caption: string;
     size: number;
+    duration?: number; //for audio sake
     type: Message['type'];
     originalName: string;
-    thumbnail?: string|undefined;
+    thumbnail?: string | undefined;
     uploadedAt: Date;
 }
 
@@ -66,4 +67,25 @@ export interface markReadPayload {
     sender_id: string;
     receiver_id: string;
     message_id: string;
+}
+
+export interface StartCallPayload {
+    callId: string;
+    type?: string;
+    receiverId: string;
+    offer: RTCSessionDescriptionInit;
+    caller: User;
+}
+
+export interface UpdateCallStatePayload {
+    _id: string;
+    status: string;
+    //initiatorId: string;
+    //receiverId: string;
+    answer?: RTCSessionDescriptionInit;
+}
+
+export interface CallIceCandidatePayload {
+    remoteUserId: string;
+    candidate: RTCIceCandidate;
 }

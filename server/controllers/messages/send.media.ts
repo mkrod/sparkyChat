@@ -11,12 +11,17 @@ import { spawn } from "child_process";
 const generateThumbnail = async (videoPath: string, thumbnailPath: string) => {
   return new Promise<void>((resolve, reject) => {
     const ffmpeg = spawn("ffmpeg", [
+      "-y",
       "-i", videoPath,
       "-ss", "00:00:01",
       "-vframes", "1",
       "-q:v", "2",
       thumbnailPath
     ]);
+
+    /*ffmpeg.stderr.on("data", data => {
+      console.error("FFmpeg stderr:", data.toString());
+    });*/
 
     ffmpeg.on("close", code => {
       if (code === 0) resolve();
@@ -27,11 +32,17 @@ const generateThumbnail = async (videoPath: string, thumbnailPath: string) => {
   });
 };
 
+
 export const sendMedia = async (req: Request, res: Response) => {
   try {
     const { files } = req as { files: Express.Multer.File[] };
     const { metadata, users } = req.body;
     const { user_id } = req.session;
+
+    const meta = [metadata].flat();
+
+    console.log(JSON.parse(meta[0]).duration)
+    
 
     if (!files?.length || !user_id)
       return res.status(400).json({ message: "Invalid request" });
@@ -47,8 +58,10 @@ export const sendMedia = async (req: Request, res: Response) => {
         const thumbnailsDir = path.join(process.cwd(), "public", "thumbnails");
         if (!fs.existsSync(thumbnailsDir)) fs.mkdirSync(thumbnailsDir, { recursive: true });
 
-        const videoPath = path.join(uploadsDir, file.filename);
+        const videoPath = `${process.env.SERVER_URL}/uploads/${file.filename}`;//path.join(uploadsDir, file.filename);
         const thumbnailPath = path.join(thumbnailsDir, `${path.parse(file.filename).name}.jpg`);
+        //console.log(videoPath)
+        //console.log(thumbnailPath)
 
         await generateThumbnail(videoPath, thumbnailPath);
       }
@@ -56,10 +69,10 @@ export const sendMedia = async (req: Request, res: Response) => {
 
     // Map files to messages
     const messages: Message[] = files.map((file, index) => {
-        //console.log(file)
+      //console.log(file)
       let caption = "";
       try {
-        const parsed = JSON.parse(metadata[index] ?? "{}");
+        const parsed = JSON.parse(meta[index] ?? "{}");
         caption = parsed.caption ?? "";
       } catch { }
 
@@ -77,10 +90,14 @@ export const sendMedia = async (req: Request, res: Response) => {
           ? `${process.env.SERVER_URL}/thumbnails/${path.parse(filename).name}.jpg`
           : undefined;
 
+      const duration: number = type === "audio" ? JSON.parse(meta[0]).duration : undefined;
+
+
       const media: Media = {
         content,
         caption,
         size,
+        duration,
         type,
         originalName: originalname,
         thumbnail,

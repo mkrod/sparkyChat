@@ -1,0 +1,36 @@
+.mobile_navbar_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    height: 100%;
+    border-top: 1px solid transparent;
+}
+
+.mobile_navbar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    font-size: 0.8rem;
+    font-family: Quicksand, sans-serif;
+    font-weight: 600;
+    position: relative;
+}
+
+.mobile_navbar_notify{
+    position: absolute;
+    top: -0.5rem;
+    right: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: #bb0000;
+    color: whitesmoke;
+    font-family: Space Mono, sans-serif;
+    border-radius: 50%;
+}

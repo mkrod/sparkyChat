@@ -1,6 +1,5 @@
 import { serverURL } from ".";
 import type { UserListTab } from "./types";
-import { countFriendsRequest } from "./user/controller";
 
 export const userListTabs: UserListTab[] = [
     {
@@ -14,7 +13,6 @@ export const userListTabs: UserListTab[] = [
     {
         label: "Requests",
         code: "requests",
-        count: countFriendsRequest(),
     },
     {
         label: "Groups",

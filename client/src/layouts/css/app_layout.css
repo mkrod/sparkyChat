@@ -1,3 +1,8 @@
+:root{
+    --mobile-navbar-height: 4rem;
+}
+
+
 .app_layout_container{
     display: flex;
     flex-direction: row;
@@ -21,4 +26,25 @@
     width: calc(100vw - 15rem);
     min-width: 70%;
     height: 100%;
+}
+
+.mobile_app_layout_container{
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile_app_container{
+    height: calc(100dvh - var(--mobile-navbar-height));
+}
+
+.mobile_app_container.navbar_hidden{
+   height: 100dvh;
+}
+.mobile_app_layout_navbar_container{
+    height: var(--mobile-navbar-height);
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 10;
 }

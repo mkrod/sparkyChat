@@ -8,7 +8,7 @@ const EmptyList: FC<Props> = ({ title }): JSX.Element => {
 
     return (
         <div style={{
-            marginTop: "50%",
+            marginTop: "30%",
             width: "100%",
             display: "flex",
             flexDirection: "column",

@@ -58,10 +58,6 @@ export const fetchAllUserRequests = async (page: number, search_term: string): P
     return await serverRequest("get", "user/requests", { page, search_term }) as Response;
 };
 
-export const countFriendsRequest = async (): Promise<number> => { //for counting sake in the red stuff of the people_screen tab
-    const response = await serverRequest("get", "user/requests/count ") as Response;
-    return response.data.count as number;
-}
 
 // 👥 Fetch all user friends
 export const fetchUserFriends = async (page: number, search_term: string): Promise<Response> => {

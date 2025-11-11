@@ -31,7 +31,7 @@ const App: FC = (): JSX.Element => {
     )
   )
   return (
-      <DataProvider> {/* Moved Connection provider to wrap just app layout cause connection is only needed when user is in */}
+      <DataProvider> {/* Moved Connection provider and others to wrap just app layout cause there are only needed when user is in */}
         <ChatProvider>
           <RouterProvider router={router} />
         </ChatProvider>

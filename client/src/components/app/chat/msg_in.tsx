@@ -7,6 +7,11 @@ import ActivityIndicator from '@/components/utility/activity_indicator';
 import { get, set } from 'idb-keyval';
 import { useConnProvider } from '@/constants/providers/conn_provider';
 import socket from '@/constants/socket.io/socket_conn';
+import { VscFileSymlinkFile } from 'react-icons/vsc';
+import { proxyImage } from '@/constants/var_2';
+import ImageViewer from '@/components/utility/viewable_image';
+import VideoViewer from '@/components/utility/video_viewer';
+import AudioPlayer from '@/components/utility/audio_player';
 
 interface Prop {
     stack: boolean;
@@ -103,7 +108,16 @@ const MsgIn: React.FC<Prop> = ({ stack, message, parentContainer, friendData }):
                                 <MdDownload size={24} color='var(--app-accent)' onClick={download} />
                             </div>
                         )}
-                        {mediaLoaded && <img src={blobUrl || message.media?.content} className='msg_in_image' />}
+                        {/*mediaLoaded && <img src={blobUrl || message.media?.content} className='msg_in_image' />*/}
+                        {mediaLoaded && (
+                            <ImageViewer
+                                src={blobUrl || message.media?.content || ""}
+                                options={{
+                                    thumbnailClassName: "msg_in_image",
+                                }}
+                                caption={message.media?.caption || ""}
+                            />
+                        )}
 
                         {loading && (
                             <div className="msg_in_loading_container">
@@ -123,7 +137,71 @@ const MsgIn: React.FC<Prop> = ({ stack, message, parentContainer, friendData }):
                     </div>
                 </div>
             );
+        case "file":
+            return (
+                <div ref={bubbleContainer} style={{ marginTop: stack ? 20 : 0 }} className='msg_in_container'>
+                    <div className="msg_in_file_container">
+                        <div className='msg_in_file_icon_container'>
+                            <VscFileSymlinkFile />
+                        </div>
+                        <a href={proxyImage(message.media?.content || "")} download className='msg_in_file_name'>{message.media?.originalName}</a>
+                    </div>
+                    <div className='msg_in_chat_msg_container'>{message.media?.caption}</div>
+                    <div className="msg_in_chat_meta_container">
+                        <span className='msg_in_chat_meta_time'>{getTimeFromDate(message.timestamp)}</span>
+                        <span className='msg_in_chat_meta_size'>{formatFileSize(message.media?.size || 0)}</span>
+                    </div>
+                </div>
+            )
+        case "video":
+            return (
+                <div ref={bubbleContainer} style={{ marginTop: stack ? 20 : 0 }} className='msg_in_container'>
+                    <div className="msg_in_image_container">
+                        {!mediaLoaded && (
+                            <div
+                                className="msg_in_image_placeholder"
+                            >
+                                <MdDownload size={24} color='var(--app-accent)' onClick={download} />
+                            </div>
+                        )}
+                        {/*mediaLoaded && <img src={blobUrl || message.media?.content} className='msg_in_image' />*/}
+                        {mediaLoaded && (
+                            <VideoViewer
+                                src={blobUrl || message.media?.content || ""}
+                                poster={message.media?.thumbnail}
+                                options={{
+                                    thumbnailClassName: "msg_in_image",
+                                }}
+                                caption={message.media?.caption || ""}
+                            />
+                        )}
+                        {loading && (
+                            <div className="msg_in_loading_container">
+                                <ActivityIndicator style='spin' size='small' />
+                            </div>
+                        )}
 
+                        {!mediaLoaded && (
+                            <div className="msg_in_size_container">
+                                {formatFileSize(message.media?.size || 0)}
+                            </div>
+                        )}
+                    </div>
+                    <div className='msg_in_chat_msg_container'>{message.media?.caption}</div>
+                    <div className="msg_in_chat_meta_container">
+                        <span className='msg_in_chat_meta_time'>{getTimeFromDate(message.timestamp)}</span>
+                    </div>
+                </div>
+            );
+        case "audio":
+            return (
+                <div ref={bubbleContainer} style={{ marginTop: stack ? 20 : 0, minWidth: "80%", minHeight: "fit-content" }} className='msg_in_container'>
+                    <AudioPlayer
+                        message={message}
+                        friendDp={friendData.picture}
+                    />
+                </div>
+            );
         default:
             return (
                 <div ref={bubbleContainer} style={{ marginTop: stack ? 20 : 0 }} className='msg_in_container'>

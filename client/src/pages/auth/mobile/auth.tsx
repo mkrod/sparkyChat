@@ -1,4 +1,5 @@
 import { AppLogo, Appname } from '@/constants'
+import { googleAuth } from '@/constants/auth'
 import { type FC, type JSX } from 'react'
 import { FcGoogle } from 'react-icons/fc'
 
@@ -18,7 +19,7 @@ const MobileAuth :FC = (): JSX.Element => {
             <h2>Sign in into your account</h2>
 
             <div className='auth_signin_options_container'>
-                <button className='auth_signin_options'>
+                <button onClick={googleAuth} className='auth_signin_options'>
                     <FcGoogle size={20}/>
                     <span>Continue with google</span>
                 </button>

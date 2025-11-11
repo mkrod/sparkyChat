@@ -16,7 +16,7 @@ interface Props {
 
 const FriendListCard: FC<Props> = ({ friend }): JSX.Element => {
 
-    const { activeColor } = useChatProvider();
+    const { activeColor, isMobile } = useChatProvider();
     const { setCurrentChatId } = useDataProvider();
     const { setFetchFriends } = usePeopleProvider();
     const names = `${friend.name.first} ${friend.name.last}`;
@@ -38,7 +38,12 @@ const FriendListCard: FC<Props> = ({ friend }): JSX.Element => {
     }
 
     return (
-        <div style={{ borderColor: activeColor.fadedBorder }} className='user_list_card_container'>
+        <div
+            style={{
+                borderColor: isMobile ? "" : activeColor.fadedBorder
+            }}
+            className='user_list_card_container'
+        >
             <div
                 style={{
                     borderColor: activeColor.fadedBorder,

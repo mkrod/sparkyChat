@@ -11,10 +11,18 @@ export interface colorScheme {
 
 export type Scheme = "dark" | "light";
 
-export interface Response {
-    message?: string | undefined;
-    status?: number | undefined;
-    data?: any | undefined;
+
+export interface Prompt {
+    type: "success" | "error";
+    title: string;
+    body?: string;
+}
+
+export interface Response<T = any> {
+    status: number | undefined;
+    success?: boolean;
+    message?: string;
+    data: T;
 }
 
 export interface User {
@@ -43,6 +51,7 @@ export interface Media {
     content: string;
     caption: string;
     size: number;
+    duration: number; //for audio
     type: Message['type'];
     originalName: string;
     thumbnail?: string | undefined;
@@ -94,11 +103,7 @@ export interface Presence {
     status: "online" | "offline" | "away" | "busy";
 }
 
-export interface NotificationCounts {
-    messages: number;
-    calls: number;
-    alerts: number;
-}
+export type NotificationCountsIndex = "chats" | "calls";
 
 export interface AppLayoutContextType {
     currentChatId: string | null;
@@ -153,7 +158,7 @@ interface Requester extends User {
     presence: Presence
 }
 
-export interface RequestList{
+export interface RequestList {
     requester: Requester;
     mutual_friends: string[];
 }
@@ -173,7 +178,7 @@ export interface FriendList extends User {
     mutual_friends: string[];
 }
 
-export interface AllFriendsType{
+export interface AllFriendsType {
     page: number,
     perPage: number,
     total: number,
@@ -181,4 +186,94 @@ export interface AllFriendsType{
     from: number,
     to: number,
     results: FriendList[];
+}
+
+export interface CallUser {
+    user_id: string;
+    username: string;
+    email: string;
+    name: {
+        first: string;
+        last: string;
+    };
+    picture: string;
+}
+
+export type CallStatus =
+    | "initiated"
+    | "ringing"
+    | "accepted"
+    | "connected"
+    | "connecting"
+    | "ended"
+    | "rejected";
+
+export type CallType = "voice" | "video";
+
+export interface CallState {
+    _id: string;
+    initiatorId: string;
+    receiverId: string;
+    type: CallType;
+    status: CallStatus;
+    initiatorSocketId?: string;
+    receiverSocketId?: string;
+    lastActivityAt: string;
+    createdAt: string;
+    updatedAt: string;
+    initiator: User;
+    receiver: User;
+    offer: RTCSessionDescriptionInit;
+    answer: RTCSessionDescriptionInit;
+}
+
+export interface CallLog {
+    _id: string;
+    callId?: string;
+    initiatorId: string;
+    receiverId: string;
+    type: CallType;
+    startedAt: string;
+    acceptedAt?: string;
+    endedAt: string;
+    durationSeconds?: number;
+    endReason: "hangup" | "rejected" | "missed" | "failed";
+    status: "completed" | "rejected" | "missed";
+    read: boolean;
+    initiator: User;
+    receiver: User;
+    createdAt: string;
+    updatedAt: string;
+}
+
+
+export interface StartCallPayload {
+    type: "video" | "voice";
+    receiverId: string;
+    offer?: RTCSessionDescriptionInit;
+}
+
+export interface UpdateCallStatePayload {
+    _id: string,
+    status: string;
+    answer?: RTCSessionDescriptionInit;
+    //initiatorId: string;
+    //receiverId: string;
+}
+export interface UpdateCallStatusPayload {
+    _id: string;
+    //receiver_id: string,
+    status: string;
+    //initiatorId: string;
+    //receiverId: string;
+}
+
+export interface Streams {
+    user_id: string;
+    stream: MediaStream;
+}
+
+export interface CallIceCandidatePayload {
+    remoteUserId: string;
+    candidate: RTCIceCandidate;
 }

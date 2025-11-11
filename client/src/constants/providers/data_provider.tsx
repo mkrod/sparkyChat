@@ -10,6 +10,7 @@ interface DataProviderTypes {
     currentChatId: string | undefined;
     setCurrentChatId: Dispatch<SetStateAction<string | undefined>>;
     currentChatMessages: CurrentChatMessageType | undefined;
+    fetchingCurrentChat: boolean; //for ui indication sake
 }
 
 
@@ -78,8 +79,11 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     ////////////////////// specific chats //////////////////////////////
     const [currentChatId, setCurrentChatId] = useState<string | undefined>(undefined);
     const [currentChatMessages, setCurrentChatMessages] = useState<CurrentChatMessageType>(); //replace any with Message type when available
+    const [fetchingCurrentChat, setFetchingCurrentChat] = useState<boolean>(false); //for ui loading sake
+
     useEffect(() => {
         if (!currentChatId) return setCurrentChatMessages(undefined);
+        currentChatMessages === undefined && setFetchingCurrentChat(true); // this will only show the loading, when the chat is opened first time to avoid loading on every new message
         //fetch messages for current chat from server
         console.log("refetching in_chat for ", currentChatId)
         fetchCurrentChatMessages(currentChatId)
@@ -89,7 +93,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
             })
             .catch((err: Error) => {
                 console.error("Error fetching current chat messages:", err);
-            });
+            })
+            .finally(() => setFetchingCurrentChat(false))
     }, [currentChatId, newMessage]);
 
 
@@ -110,6 +115,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         }
 
     }, [socket]);
+    
 
     return (
         <DataContext.Provider value={{
@@ -118,7 +124,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
             presence,
             currentChatId,
             setCurrentChatId,
-            currentChatMessages
+            currentChatMessages,
+            fetchingCurrentChat
         }}>
             {children}
         </DataContext.Provider>

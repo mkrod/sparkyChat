@@ -44,6 +44,17 @@
 }
 
 
+button{
+  background-color: transparent;
+  padding: 0.2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

@@ -32,7 +32,10 @@ const DesktopChatList: FC = (): JSX.Element => {
             <MessageListcard
             data={chat}
             userClick={(id: User['user_id']) => setCurrentChatId(id)}
-            key={chat._id} 
+            key={chat._id}
+            options={{
+              border: true
+            }}
             />
           )
         })}

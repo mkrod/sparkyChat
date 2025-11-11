@@ -10,3 +10,45 @@
     justify-content: center;
     align-items: center;
 }
+
+.root_layout_popup_modal_container{
+    position: fixed;
+    top: 20px;
+    right: -100%;
+    min-width: 250px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    border-radius: 10px 0 0 10px;
+    padding: 10px;
+    transition: right ease-in-out .375s;
+    z-index: 99;
+}
+
+.root_layout_popup_modal_container.popup_modal_active{
+    right: 0;
+}
+
+.root_layout_popup_modal_icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.root_layout_popup_modal_messages{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.root_layout_popup_modal_title{
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+}
+.root_layout_popup_modal_message{
+    font-size: 10px;
+    font-weight: 500;
+}

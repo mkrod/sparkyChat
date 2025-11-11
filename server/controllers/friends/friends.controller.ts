@@ -7,15 +7,10 @@ import { notificationModel } from "../../utilities/db/model/notification.model.j
 import { onlineUsersModel } from "../../utilities/db/model/onlineUsers.js";
 import { getIoNamespace } from "../../utilities/websocket/ws_conn.js";
 import { usersModel } from "../../utilities/db/model/users.js";
+import { sendSocketEvent } from "../../utilities/websocket/helper.js";
 
 // Helper: send socket event if user is online
-const sendSocketEvent = async (user_id: string, event: string, data?: any) => {
-  const io = getIoNamespace();
-  const online = await onlineUsersModel.findOne({ user_id });
-  if (online && online.status !== "offline" && online.socket_id) {
-    io.to(online.socket_id).emit(event, data);
-  }
-};
+
 
 // 📩 Send a friend request
 export const sendFriendRequest = async (req: Request, res: Response) => {
@@ -303,26 +298,7 @@ export const fetchAllUserRequests = async (req: Request, res: Response) => {
   }
 };
 
-export const countFriendsRequest = async (req: Request, res: Response) => {
-  const { user_id } = req.session;
 
-  if (!user_id) {
-    return res.status(400).json({ status: 400, message: "Missing user_id" });
-  }
-
-  try {
-    const count = await friendRequestModel.countDocuments({ requested: user_id });
-
-    res.status(200).json({
-      status: 200,
-      message: "Friend request count fetched successfully",
-      data: { count },
-    });
-  } catch (err) {
-    console.error("Error counting friend requests:", err);
-    res.status(500).json({ status: 500, message: "Failed to count friend requests" });
-  }
-};
 
 
 // 👥 Fetch all confirmed friends

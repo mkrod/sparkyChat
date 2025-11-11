@@ -3,66 +3,31 @@ import { useEffect, type FC, type JSX } from 'react'
 import UserListCard from './user_list_card';
 import type { UserList } from '@/constants/types';
 import "./css/user_list.css";
-import ActivityIndicator from '@/components/utility/activity_indicator';
 import EmptyList from './empty_list';
+import { useChatProvider } from '@/constants/providers/chatProvider';
+import PaginationControl from '@/components/utility/paginatiom_control';
 
 interface Props {
     container: HTMLDivElement | null;
 }
 
 const UsersList: FC<Props> = ({ container }): JSX.Element => {
+    const { isMobile } = useChatProvider();
 
 
-
-    const { allUsers, fetchUsers, setFetchUsers, setPage } = usePeopleProvider();
+    const { allUsers, setFetchUsers, setPage, page } = usePeopleProvider();
     useEffect(() => {
         setFetchUsers(true) //on mount, fetch
         return () => setFetchUsers(false); // clean up
     }, [])
 
-    useEffect(() => {
-        if (!container) return;
-
-        const handleScroll = () => {
-
-            const { scrollHeight, scrollTop, clientHeight } = container;
-
-            if (scrollHeight <= (scrollTop + clientHeight)) { //bottom
-                if (fetchUsers || !allUsers) return;
-                if (allUsers.totalPages <= allUsers.page) return;
-                setPage((prev) => {
-                    if (prev < allUsers.totalPages) {
-                        container.scrollTo({ top: 2, behavior: "instant" });
-                        return prev + 1
-                    } else {
-                        return prev
-                    }
-                });
-                setFetchUsers(true);
-            }
-
-            if (scrollTop === 0) { //top
-                if (fetchUsers || !allUsers) return;
-                if (allUsers.page === 1) return;
-                setPage((prev) => {
-                    if (prev > 1) {
-                        container.scrollTo({ top: 0, behavior: "instant" });
-                        return prev - 1
-                    } else {
-                        return prev
-                    }
-                });
-                setFetchUsers(true);
-            }
-        }
-        container.addEventListener("scroll", handleScroll);
-        return () => container.removeEventListener("scroll", handleScroll);
-    }, [container, allUsers]);
-
 
     return (
         <div className='user_list_container'>
-            <div className="user_list_list_container">
+            <div style={{
+                gap: isMobile ? "1rem" : "0.3rem",
+                marginTop: "1rem"
+            }} className="user_list_list_container">
                 {
                     allUsers?.results.map((user: UserList, idx: number) => (
                         <UserListCard key={`${idx} ${user.user_id}`} user={user} />
@@ -72,13 +37,18 @@ const UsersList: FC<Props> = ({ container }): JSX.Element => {
                     allUsers?.total === 0 && <EmptyList title="No pending Request" />
                 }
             </div>
-            {fetchUsers &&
-                (
-                    <div className="user_list_pagination_controller_container">
-                        <ActivityIndicator size='small' color='var(--app-accent)' style='spin' />
-                    </div>
-                )
-            }
+            {allUsers && allUsers.totalPages > 1 && <div className='page_pagination_container'>
+                <PaginationControl 
+                currentPage={page}
+                total={allUsers?.total||0}
+                unit={allUsers?.perPage||0}
+                onPageChange={(page) => {
+                    setPage(page);
+                    setFetchUsers(true);
+                    container?.scrollTo({ top: 0, behavior: "instant" });
+                }}
+                />
+            </div>}
         </div>
     )
 }

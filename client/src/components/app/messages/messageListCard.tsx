@@ -11,13 +11,15 @@ import { useConnProvider } from '@/constants/providers/conn_provider';
 import { useUtilityProvider } from '@/constants/providers/utility_provider';
 import { serverURL } from '@/constants';
 import ActivityIndicator from '@/components/utility/activity_indicator';
+import ImageViewer from '@/components/utility/viewable_image';
 
 interface Props {
     data: MessageList;
     userClick?: (userId: User['user_id']) => void;
+    options: Record<string, any>
 }
 
-const MessageListcard: FC<Props> = ({ data, userClick }): JSX.Element => {
+const MessageListcard: FC<Props> = ({ data, userClick, options }): JSX.Element => {
 
     const { activeColor } = useChatProvider();
     const { presence, currentChatId } = useDataProvider();
@@ -78,7 +80,7 @@ const MessageListcard: FC<Props> = ({ data, userClick }): JSX.Element => {
     /////////////  typing
     const userTyping = (typingUsersList.find((tl) => tl.user_id === data.otherPartyData.user_id)) ? true : false;
     return (
-        <div style={{ borderColor: activeColor.fadedBorder }} className='message_list_card_container'>
+        <div style={{ borderColor: options.border ? activeColor.fadedBorder : "" }} className='message_list_card_container'>
             <div className={`message_list_card_is_active ${currentChatId === data.otherPartyData.user_id ? "active" : ""}`} />
             <div className="message_list_card_image_container">
                 {dpIsLoading && (
@@ -90,7 +92,17 @@ const MessageListcard: FC<Props> = ({ data, userClick }): JSX.Element => {
                         />
                     </div>
                 )}
-                <img onLoad={() => setDpIsLoading(false)} src={`${serverURL}/proxy?url=${encodeURIComponent(data.otherPartyData.picture)}`} className='message_list_card_image' />
+                <ImageViewer 
+                src={`${serverURL}/proxy?url=${encodeURIComponent(data.otherPartyData.picture)}`}
+                options={{
+                    thumbnailClassName: "message_list_card_image",
+                    rounded: true,
+                    height: "100%",
+                    width: "100%"
+                }}
+                onload={() => setDpIsLoading(false)}
+                />
+                {/*<img onLoad={() => setDpIsLoading(false)} src={`${serverURL}/proxy?url=${encodeURIComponent(data.otherPartyData.picture)}`} className='message_list_card_image' />*/}
                 <div
                     style={{ backgroundColor: presenceColor[userPresence] }}
                     className="message_list_card_presence_indicator">

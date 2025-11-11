@@ -1,6 +1,9 @@
 import type { ReactNode, RefObject } from "react";
-import type { colorScheme, GroupedMessages, Message, NotificationCounts, Presence, PreviewMediaData, User } from "./types";
+import type { colorScheme, GroupedMessages, Message, NotificationCountsIndex, Presence, PreviewMediaData, User } from "./types";
 import { IoCheckmark, IoCheckmarkDone } from "react-icons/io5";
+import { RxUpdate } from "react-icons/rx";
+import { LuPhone, LuSettings2 } from "react-icons/lu";
+import { TbMessage2 } from "react-icons/tb";
 
 export const colors: Record<string, colorScheme> = {
   light: {
@@ -34,6 +37,28 @@ export const defaultUserObject = {
   created_at: "Loading...",
 } as User;
 
+export const NavLinks = [
+  {
+      name: "Status",
+      icon: <RxUpdate color='blue' size={18} />,
+      path: "/app/status",
+  },
+  {
+      name: "Calls",
+      icon: <LuPhone color='#940063' size={18} />,
+      path: "/app/calls",
+  },
+  {
+      name: "Chats",
+      icon: <TbMessage2 color='green' size={18} />,
+      path: "/app",
+  },
+  {
+      name: "Settings",
+      icon: <LuSettings2 color='#6400a7' size={18} />,
+      path: "/app/settings",
+  },
+]
 
 export function formatDate(dateInput: Date | string): string {
   const date = new Date(dateInput);
@@ -68,36 +93,16 @@ export const getTimeFromDate = (dateInput: Date | string) => {
   return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 }
 
-export const saveCaret = (window: Window, caretPosRef: RefObject<number | null>) => {
-  const sel = window.getSelection();
-  if (sel && sel.rangeCount > 0) {
-    const range = sel.getRangeAt(0);
-    caretPosRef.current = range.startOffset;
-  }
-};
-
-export const restoreCaret = (window: Window, caretPosRef: RefObject<number | null>, inputRef: RefObject<HTMLDivElement | null>) => {
-  const node = inputRef.current;
-  if (node && caretPosRef.current !== null) {
-    const sel = window.getSelection();
-    const range = document.createRange();
-    range.setStart(node.firstChild || node, caretPosRef.current);
-    range.collapse(true);
-    sel?.removeAllRanges();
-    sel?.addRange(range);
-  }
-};
-
 export const scrollElementToBottom = (obj: RefObject<HTMLElement | null>) => {
   if (!obj.current) return;
   const element = obj.current;
   element.scrollTop = element.scrollHeight;
 }
 
-export const defaultNotificationCounts: NotificationCounts = {
-  messages: 0,
+export const defaultNotificationCounts: Record<NotificationCountsIndex, number> = {
+  chats: 0,
   calls: 0,
-  alerts: 0,
+  //alerts: 0,
 }
 
 
