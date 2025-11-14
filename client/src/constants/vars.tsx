@@ -35,6 +35,9 @@ export const defaultUserObject = {
   },
   picture: "/default_dp.jpg",
   created_at: "Loading...",
+  privacy: {
+    read_receipt: false
+  }
 } as User;
 
 export const NavLinks = [

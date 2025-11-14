@@ -7,6 +7,7 @@ import ActivityIndicator from "./activity_indicator";
 import { IoMdMic } from "react-icons/io";
 import { serverURL } from "@/constants";
 import { useConnProvider } from "@/constants/providers/conn_provider";
+import { formatTime } from "@/constants/var_2";
 
 interface Props {
   message: Message;
@@ -68,16 +69,6 @@ const AudioPlayer: FC<Props> = ({ message, friendDp }): ReactNode => {
     const newTime = (parseFloat(e.target.value) / 100) * duration;
     audio.currentTime = newTime;
     setProgress(parseFloat(e.target.value));
-  };
-
-  const formatTime = (sec: number) => {
-    const m = Math.floor(sec / 60)
-      .toString()
-      .padStart(1, "0");
-    const s = Math.floor(sec % 60)
-      .toString()
-      .padStart(2, "0");
-    return `${m}:${s}`;
   };
 
   return (

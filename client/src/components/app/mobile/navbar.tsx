@@ -33,9 +33,9 @@ const MobileNavbar: FC<Props> = ({ path }): JSX.Element => {
                     </div>
                     <div
                         style={{ 
-                            color: path.startsWith(bar.path) ? "var(--app-accent)" : "",
-                            fontWeight: path.startsWith(bar.path) ? "bolder" : 600,
-                            fontSize: path.startsWith(bar.path) ? "0.8rem" : "0.6rem"
+                            color: (bar.path !== "/app" ? path.startsWith(bar.path) : path === bar.path)  ? "var(--app-accent)" : "",
+                            fontWeight: (bar.path !== "/app" ? path.startsWith(bar.path) : path === bar.path) ? "bolder" : 600,
+                            fontSize: (bar.path !== "/app" ? path.startsWith(bar.path) : path === bar.path) ? "0.8rem" : "0.6rem"
                         }}
                         className="mobile_navbar_text"
                     >

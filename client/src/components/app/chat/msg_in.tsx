@@ -95,7 +95,7 @@ const MsgIn: React.FC<Prop> = ({ stack, message, parentContainer, friendData }):
         observer.observe(bubbleContainer.current);
 
         return () => observer.disconnect();
-    }, [message, parentContainer?.current, bubbleContainer.current, user.privacy.read_receipt]);
+    }, [message, parentContainer?.current, bubbleContainer.current, user.privacy?.read_receipt]);
 
 
     switch (message.type) {

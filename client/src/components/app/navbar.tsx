@@ -15,7 +15,9 @@ import ImageViewer from '../utility/viewable_image';
 
 
 type Props = { path: string }
+
 const DesktopNavbar: FC<Props> = ({ path }): JSX.Element => {
+
     const { user } = useConnProvider();
     const { activeColor, userScheme, switchScheme } = useChatProvider();
     const [dpIsLoading, setDpIsLoading] = useState<boolean>(true);
@@ -95,7 +97,7 @@ const DesktopNavbar: FC<Props> = ({ path }): JSX.Element => {
                         key={index}
                         className="app_navbar_link_container"
                     >
-                        {path.startsWith(bar.path) && <div className='app_navbar_link_active'></div>}
+                        {(bar.path !== "/app" ? path.startsWith(bar.path) : path === bar.path) && <div className='app_navbar_link_active'></div>}
                         <div className='app_navbar_link_icon_container'>
                             {bar.icon}
                         </div>

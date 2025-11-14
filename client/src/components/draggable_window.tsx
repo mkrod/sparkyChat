@@ -220,7 +220,7 @@ const Draggable: React.FC<DraggableProps> = ({
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
-        zIndex: 5,
+        zIndex: 10,
       }}
     >
       {/* Header */}

@@ -27,6 +27,7 @@
     "mongoose": "latest",
     "multer": "^2.0.2",
     "mysql2": "latest",
+    "peer": "^1.0.2",
     "pnpm": "^10.18.3",
     "socket.io": "latest"
   },

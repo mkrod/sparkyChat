@@ -1,5 +1,5 @@
 import type { SessionData } from "express-session";
-import type { CallIceCandidatePayload, StartCallPayload, UpdateCallStatePayload } from "../../utilities/types/others.js";
+import type { CustomEvent, StartCallPayload, UpdateCallStatePayload } from "../../utilities/types/others.js";
 import { CallLogModel, CallStateModel } from "../../utilities/db/model/calls.model.js";
 import { sendSocketEvent } from "../../utilities/websocket/helper.js";
 
@@ -54,7 +54,7 @@ export const startCall = async (payload: StartCallPayload, sess: SessionData) =>
     // If this was a reconnection with a new offer, emit offer_changed
     if (callId) {
         await sendSocketEvent(receiverId, "offer_changed", { callId: call._id, offer });
-    } 
+    }
 
     // ⏳ Timeout for unanswered call (only for new calls)
     if (!callId) {
@@ -63,6 +63,7 @@ export const startCall = async (payload: StartCallPayload, sess: SessionData) =>
             const current = await CallStateModel.findById(call._id);
             if (!current) return;
 
+            
             if (["initiated", "ringing"].includes(current.status)) {
                 await CallStateModel.updateOne(
                     { _id: call._id },
@@ -83,6 +84,10 @@ export const startCall = async (payload: StartCallPayload, sess: SessionData) =>
                 await Promise.all([
                     sendSocketEvent(current.initiatorId, "call_logs_changed"),
                     sendSocketEvent(current.receiverId, "call_logs_changed"),
+                ]);
+                await Promise.all([
+                    sendSocketEvent(current.initiatorId, "call_state_changed"),
+                    sendSocketEvent(current.receiverId, "call_state_changed"),
                 ]);
             }
 
@@ -113,7 +118,7 @@ export const updateCallState = async (payload: UpdateCallStatePayload) => {
     if (!status) return;
 
     const update: any = { status, lastActivityAt };
-    if(answer !== undefined) update.answer = answer;
+    if (answer !== undefined) update.answer = answer;
 
     const call = await CallStateModel.findOneAndUpdate(
         { _id },
@@ -140,8 +145,7 @@ export const updateCallState = async (payload: UpdateCallStatePayload) => {
 };
 
 
-export const sendCandidate = async (payload: CallIceCandidatePayload) => {
-    
-    const { remoteUserId, candidate } = payload as CallIceCandidatePayload;
-    await sendSocketEvent(remoteUserId, "call_ice_candidate", candidate);
+export const sendCustomEvent = async (payload: CustomEvent<any>) => {
+    const { remoteUserId, event, senderId } = payload as CustomEvent<any>;
+    await sendSocketEvent(remoteUserId, event, { senderId });
 }

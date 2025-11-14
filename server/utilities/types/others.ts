@@ -85,7 +85,9 @@ export interface UpdateCallStatePayload {
     answer?: RTCSessionDescriptionInit;
 }
 
-export interface CallIceCandidatePayload {
+export interface CustomEvent<T = any> {
+    senderId: string;
     remoteUserId: string;
-    candidate: RTCIceCandidate;
+    event: string;
+    data?: T;
 }

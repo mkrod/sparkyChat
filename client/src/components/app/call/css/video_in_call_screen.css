@@ -1,0 +1,14 @@
+.video_in_call_stream_container {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: black;
+}
+
+
+.main_video_stream_container{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}

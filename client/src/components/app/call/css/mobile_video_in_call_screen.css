@@ -1,0 +1,82 @@
+.mobile_video_in_call_container {
+    display: flex;
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.mobile_video_in_call.local_video_container {
+    position: absolute;
+    bottom: 7rem;
+    right: 1rem;
+    height: 15rem;
+    width: 10rem;
+    background-color: aqua;
+    border-radius: 0.4rem;
+}
+
+.mobile_video_in_call.remote_video_container {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: black;
+}
+
+.mobile_video_in_call_video {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 0.4rem;
+}
+
+.mobile_video_in_call_local_paused{
+    height: 100%;
+    width: 100%;
+    background-color: var(--app-accent);
+    border-radius: 0.3rem;
+}
+
+.mobile_video_in_call_remote_paused{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: var(--app-accent);
+    border-radius: 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile_video_in_call_local_paused{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobile_video_in_call_remote_paused.mobile_video_in_call_local_paused_user_dp_container{
+    height: 10rem;
+    width: 10rem;
+}
+.mobile_video_in_call_local_paused_user_dp_container{
+    height: 7rem;
+    width: 7rem;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.mobile_video_in_call_local_paused_user_dp_is_loading{
+    height: 100%;
+    width: 100%;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile_video_in_call_local_paused_user_dp{
+    height: 100%;
+    width: 100%;
+    object-fit: fill;
+}

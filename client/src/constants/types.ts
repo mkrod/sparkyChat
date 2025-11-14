@@ -1,4 +1,5 @@
 import type { CSSProperties, Dispatch, SetStateAction } from "react";
+import type { SignalData } from "simple-peer";
 
 export interface colorScheme {
     background: CSSProperties['background'];
@@ -223,8 +224,8 @@ export interface CallState {
     updatedAt: string;
     initiator: User;
     receiver: User;
-    offer: RTCSessionDescriptionInit;
-    answer: RTCSessionDescriptionInit;
+    offer: SignalData;
+    answer: SignalData;
 }
 
 export interface CallLog {
@@ -250,13 +251,13 @@ export interface CallLog {
 export interface StartCallPayload {
     type: "video" | "voice";
     receiverId: string;
-    offer?: RTCSessionDescriptionInit;
+    offer?: SignalData;
 }
 
 export interface UpdateCallStatePayload {
     _id: string,
     status: string;
-    answer?: RTCSessionDescriptionInit;
+    answer?: SignalData;
     //initiatorId: string;
     //receiverId: string;
 }
@@ -273,7 +274,9 @@ export interface Streams {
     stream: MediaStream;
 }
 
-export interface CallIceCandidatePayload {
+export interface CustomEvent<T = any> {
+    senderId: string;
     remoteUserId: string;
-    candidate: RTCIceCandidate;
+    event: string;
+    data?: T;
 }

@@ -49,6 +49,8 @@ const server = https.createServer(sslOptions, app);
 //////////////////// WebSocket ///////////////////////
 wsConfig(server);
 
+////////////////// peer server ///////////////////////
+
 //////////////////// Static files ///////////////////
 app.use("/", express.static(path.join(__dirname, "public"), { index: "index.html" }));
 // Serve uploads separately for JS previews
@@ -61,6 +63,7 @@ app.use("/thumbnail", express.static(path.join(__dirname, "public/thumbnails"), 
     immutable: true
 }));
 */
+
 //////////////////// Routes /////////////////////////
 app.use("/api/auth", authRoutes);
 app.use("/api/session", sessionRoutes);

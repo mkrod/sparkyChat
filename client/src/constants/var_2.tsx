@@ -24,3 +24,13 @@ export const userListTabs: UserListTab[] = [
 export const proxyImage = (link: string): string => {
     return `${serverURL}/proxy?url=${encodeURIComponent(link)}`
 }
+
+export const formatTime = (sec: number) => {
+    const m = Math.floor(sec / 60)
+      .toString()
+      .padStart(1, "0");
+    const s = Math.floor(sec % 60)
+      .toString()
+      .padStart(2, "0");
+    return `${m}:${s}`;
+  };

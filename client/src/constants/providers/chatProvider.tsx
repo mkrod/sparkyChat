@@ -22,6 +22,7 @@ interface ChatContextType {
     nameFilter: string;
     setNameFilter: Dispatch<SetStateAction<string>>;
     hideMobileNavbar: boolean;
+    setHasCallState: Dispatch<SetStateAction<boolean>>;
 }
 
 
@@ -87,7 +88,8 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children }) => {
 
     // hiding navbar on mobile for fullscreen stuffs\
     const { currentChatId } = useDataProvider();
-    const hideMobileNavbar = [currentChatId].some(Boolean);
+    const [hasCallState, setHasCallState] = useState<boolean>(false);
+    const hideMobileNavbar = [currentChatId, hasCallState].some(Boolean);
 
 
 
@@ -104,7 +106,8 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children }) => {
                 switchScheme,
                 nameFilter,
                 setNameFilter,
-                hideMobileNavbar
+                hideMobileNavbar,
+                setHasCallState
             }}>
             {children}
         </ChatContext.Provider>
