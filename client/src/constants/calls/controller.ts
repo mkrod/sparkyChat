@@ -1,5 +1,5 @@
 import { serverRequest } from "..";
-import type { CallLog, CallState, Response } from "../types";
+import type { AllCallLogsType, CallListTab, CallLog, CallState, Response } from "../types";
 
 
 export const fetchUserCallState = async (): Promise<Response> => {
@@ -7,7 +7,13 @@ export const fetchUserCallState = async (): Promise<Response> => {
     return response;
 }
 
-export const fetchUserCallLogs = async () => {
-    const response = await serverRequest("get", "call/logs") as Response<CallLog[]>;
+export const fetchUserCallLogs = async (page: number, filter: CallListTab["code"]) => {
+    const response = await serverRequest("get", "call/logs", {page, filter}) as Response<AllCallLogsType>;
+    return response
+}
+
+
+export const fetchUserParallelCallLogs = async () => {
+    const response = await serverRequest("get", "call/logs/unfiltered") as Response<CallLog[]>;
     return response
 }

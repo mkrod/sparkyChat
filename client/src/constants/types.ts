@@ -137,6 +137,12 @@ export interface UserListTab {
     count?: Promise<number>;
 }
 
+export interface CallListTab {
+    label: string;
+    code: "all" | "missed" | "incoming" | "outgoing";
+    count?: Promise<number>;
+}
+
 export interface UserList extends User {
     presence: Presence;
     friends: boolean,
@@ -228,6 +234,7 @@ export interface CallState {
     answer: SignalData;
 }
 
+
 export interface CallLog {
     _id: string;
     callId?: string;
@@ -245,6 +252,17 @@ export interface CallLog {
     receiver: User;
     createdAt: string;
     updatedAt: string;
+}
+
+
+export interface AllCallLogsType {
+    page: number,
+    perPage: number,
+    total: number,
+    totalPages: number,
+    from: number,
+    to: number,
+    results: CallLog[];
 }
 
 

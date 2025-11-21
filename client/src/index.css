@@ -4,32 +4,55 @@
   line-height: 1.5;
   font-weight: 400;
 
+  /* Theme */
   color-scheme: light dark;
   color: #f8f8f8de;
   background-color: #242424;
 
-
+  /* App Colors */
   --accent1: #ff1200;
   --accent2: #ffdb00;
   --app-accent: #0f74f8;
 
+  /* Rendering Quality */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-
-*{
+/* RESET */
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+
   user-select: none;
-  -webkit-user-drag: none;
   -webkit-user-select: none;
   -moz-user-select: none;
+
+  -webkit-user-drag: none;
   -moz-user-drag: none;
+
+  -webkit-tap-highlight-color: transparent;
 }
+
+/* REQUIRED for 100vh / layout components */
+html, body, #root {
+  height: 100%;
+}
+
+/* Inputs inherit font */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* Prevent image dragging (cross-browser) */
+img {
+  user-drag: none;
+  -webkit-user-drag: none;
+}
+
 
 *::-webkit-scrollbar{
   width: 5px;

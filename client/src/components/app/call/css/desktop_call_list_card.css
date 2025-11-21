@@ -1,0 +1,131 @@
+.d_call_list_card{
+    display: flex;
+    flex-direction: row;
+    gap: 0.4rem;
+    height: 2.5rem;
+    flex-shrink: 0;
+    border: 0.5px solid transparent;
+    align-items: center;
+    padding: 0.2rem var(--d-call-list-padding-hor);
+    font-size: 0.85rem;
+    font-family: Quicksand, sans-serif;
+}
+
+.d_call_list_card_section{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    height: 100%;
+}
+
+
+.d_call_list_card_section.name {
+    flex: 1;
+    font-weight: 600;
+    font-size: 0.7rem;
+}
+
+.d_call_list_card_section.email {
+    width: 20%;
+    flex-shrink: 0;
+    font-weight: 700;
+    font-size: 0.7rem;
+}
+
+.d_call_list_card_section.time {
+    width: 15%;
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.d_call_list_card_section.dur {
+    width: 10%;
+    flex-shrink: 0;
+    font-weight: 600;
+    font-size: 0.7rem;
+}
+
+.d_call_list_card_section.type {
+    width: 10%;
+    flex-shrink: 0;
+    font-weight: 600;
+    font-size: 0.7rem;
+}
+
+.d_call_list_card_section.status {
+    width: 15%;
+    flex-shrink: 0;
+}
+
+.d_call_list_card_section.action {
+    width: 10%;
+    flex-shrink: 0;
+}
+
+
+.d_call_list_card_user_dp_container{
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #111111;
+    overflow: hidden;
+}
+
+.d_call_list_card_user_dp_loading{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.d_call_list_card_user_dp{
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+}
+
+
+.d_call_list_card_section_end_reason{
+    height: 80%;
+    width: 90%;
+    padding: 0 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.3rem;
+    border: 1px solid transparent;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.d_call_list_card_section_end_reason.completed{
+    color: #00b600;
+    border-color: #00b6009a;
+    background-color: #00b6002f;
+}
+.d_call_list_card_section_end_reason.missed{
+    color: #b60000;
+    border-color: #b600009a;
+    background-color: #b600002f;
+}
+.d_call_list_card_section_end_reason.rejected{
+    color: #beb200;
+    border-color: #beb2009a;
+    background-color: #beb2002f;
+}
+.d_call_list_card_section_end_reason.cancelled{
+    color: #0060dd;
+    border-color: #0060dd9a;
+    background-color: #0060dd2f;
+}

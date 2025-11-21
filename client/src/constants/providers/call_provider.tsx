@@ -1,16 +1,24 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type Dispatch, type ReactNode, type SetStateAction } from 'react';
 import socket from '../socket.io/socket_conn.js';
-import type { CallLog, CallState, CustomEvent, Response, StartCallPayload, Streams, UpdateCallStatePayload } from '../types.js';
-import { fetchUserCallLogs, fetchUserCallState } from '../calls/controller.js';
+import type { AllCallLogsType, CallListTab, CallLog, CallState, CustomEvent, Response, StartCallPayload, Streams, UpdateCallStatePayload } from '../types.js';
+import { fetchUserCallLogs, fetchUserCallState, fetchUserParallelCallLogs } from '../calls/controller.js';
 import { useConnProvider } from './conn_provider.js';
 import { useChatProvider } from './chatProvider.js';
 import { createPeer } from '../peerjs/peer.conn.js';
 import { Peer } from 'peerjs';
 import { type MediaConnection } from 'peerjs';
+import { callTabs } from '../var_2.js';
 
 interface CallContextType {
     callState: CallState | undefined;
-    callLogs: CallLog[];
+    callLogs: AllCallLogsType | undefined;
+    callLogsParal: CallLog[];
+    callLogFilter: CallListTab["code"];
+    setCallLogFilter: Dispatch<SetStateAction<CallListTab["code"]>>;
+    callLogPage: number;
+    setCallLogPage: Dispatch<SetStateAction<number>>;
+    fetchCallLogs: boolean;
+    setFetchCallLogs: Dispatch<SetStateAction<boolean>>;
     updateCallState: (payload: UpdateCallStatePayload) => void;
     startCall: (payload: StartCallPayload) => void;
     acceptCall: () => void;
@@ -36,11 +44,16 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     const { setPrompt, setHasCallState, isMobile } = useChatProvider();
 
     const [callState, setCallState] = useState<CallState | undefined>();
-    const [callLogs, setCallLogs] = useState<CallLog[]>([]);
+    const [callLogs, setCallLogs] = useState<AllCallLogsType | undefined>(undefined);
+
+    const [callLogsParal, setCallLogsParal] = useState<CallLog[]>([]);
 
 
     const [fetchCallState, setFetchCallState] = useState<boolean>(true);
     const [fetchCallLogs, setFetchCallLogs] = useState<boolean>(true);
+
+    const [callLogFilter, setCallLogFilter] = useState<CallListTab["code"]>(callTabs[0].code);
+    const [callLogPage, setCallLogPage] = useState<number>(1);
 
     const peerRef = useRef<Peer | null>(null);
     const callRef = useRef<MediaConnection | null>(null);
@@ -80,13 +93,22 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         if (!fetchCallLogs) return;
-        fetchUserCallLogs()
+        fetchUserCallLogs(callLogPage, callLogFilter)
             .then((res: Response) => {
-                if (res.status === 200) setCallLogs(res.data as CallLog[]);
+                if (res.status === 200) setCallLogs(res.data as AllCallLogsType);
             })
             .catch(err => console.error("Cannot fetch call logs:", err))
             .finally(() => setFetchCallLogs(false));
-    }, [fetchCallLogs]);
+
+        fetchUserParallelCallLogs()
+            .then((res) => {
+                if (res.status === 200) {
+                    setCallLogsParal(res.data as CallLog[])
+                }
+            })
+            .catch(err => console.error("Cannot fetch call logs paral:", err))
+            .finally(() => setFetchCallLogs(false));
+    }, [fetchCallLogs, callLogFilter, callLogPage]);
 
     useEffect(() => {
         const handleCallStateChange = () => setFetchCallState(true);
@@ -107,47 +129,47 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
     //init peer
     useEffect(() => {
         if (user.user_id === "Loading...") return;
-    
+
         // Create peer
         const peer = createPeer(user.user_id);
         peerRef.current = peer;
-    
+
         // ------------------- Peer Events -------------------
         peer.on("open", (id) => {
             console.log("✅ Peer connection opened with ID:", id);
         });
-    
+
         peer.on("connection", (conn) => {
             console.log("🔗 Incoming data connection:", conn);
             conn.on("data", (data) => console.log("📩 Received data:", data));
         });
-    
+
         peer.on("call", (call) => {
             console.log("📞 Incoming call:", call);
             callRef.current = call;
         });
-    
+
         peer.on("disconnected", () => {
             console.warn("⚠️ Peer temporarily disconnected from server");
             // Don't reconnect here! Let it stay disconnected.
             // Only handle UI or retries elsewhere if needed.
         });
-    
+
         peer.on("close", () => {
             console.warn("❌ Peer connection closed");
         });
-    
+
         peer.on("error", (err) => {
             console.error("❌ Peer error:", err);
         });
-    
+
         // Cleanup on unmount / leave page
         return () => {
             peer.destroy();
             peerRef.current = null;
         };
     }, [user.user_id]);
-    
+
 
 
 
@@ -451,56 +473,66 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         if (!localStream) return;
         const call = callRef.current;  // NOT peerRef
         if (!call) return;
-    
+
         // current track
         const oldTrack = localStream.stream.getVideoTracks()[0];
         if (!oldTrack) return;
-    
+
         // get available cameras
         const devices = await navigator.mediaDevices.enumerateDevices();
         const cams = devices.filter(d => d.kind === "videoinput");
-    
+
         if (cams.length < 2) {
             setPrompt({ type: "error", title: "No second camera available" });
             return;
         }
-    
+
         // pick the opposite camera
         const currentId = oldTrack.getSettings().deviceId;
         const nextCam = cams.find(c => c.deviceId !== currentId) || cams[0];
-    
+
         // get new stream
         const newStream = await navigator.mediaDevices.getUserMedia({
             video: { deviceId: { exact: nextCam.deviceId } }
         });
-    
+
         const newTrack = newStream.getVideoTracks()[0];
-    
+
         // replace video track on the RTCPeerConnection inside PeerJS call
         const sender = call.peerConnection
             .getSenders()
             .find(s => s.track?.kind === "video");
-    
+
         if (sender) sender.replaceTrack(newTrack);
-    
+
         // update your local stream for UI
         localStream.stream.removeTrack(oldTrack);
         localStream.stream.addTrack(newTrack);
-    
+
         setLocalStream({
             user_id: localStream.user_id,
             stream: localStream.stream
         });
-    
+
         oldTrack.stop();
-    
+
         console.log("Camera switched");
     }, [localStream]);
-    
+
 
 
     return (
-        <CallContext.Provider value={{ callState, callLogs, startCall, acceptCall, updateCallState, localStream, remoteStream, toggleVideo, toggleMic, isLocalVideoPaused, isLocalAudioPaused, isRemoteAudioPaused, isRemoteVideoPaused, toggleShareScreen, isSharingScreen, screenStream, switchCamera }}>
+        <CallContext.Provider value={{
+            callState, callLogs, callLogsParal,
+            callLogPage, setCallLogPage,
+            fetchCallLogs, setFetchCallLogs,
+            callLogFilter, setCallLogFilter,
+            startCall, acceptCall, updateCallState,
+            localStream, remoteStream, screenStream,
+            toggleVideo, toggleMic, toggleShareScreen, switchCamera,
+            isLocalVideoPaused, isLocalAudioPaused, isRemoteAudioPaused, isRemoteVideoPaused,
+            isSharingScreen,
+        }}>
             {children}
         </CallContext.Provider>
     );

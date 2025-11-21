@@ -12,6 +12,7 @@ import { NavLinks } from '@/constants/vars';
 import type { NotificationCountsIndex } from '@/constants/types';
 import { useNavigate } from 'react-router';
 import ImageViewer from '../utility/viewable_image';
+import { navHelper } from '@/constants/var_2';
 
 
 type Props = { path: string }
@@ -93,7 +94,7 @@ const DesktopNavbar: FC<Props> = ({ path }): JSX.Element => {
             <div className="app_navbar_links_container">
                 {navlinks.map((bar, index) => (
                     <div
-                        onClick={() => navigate(bar.path)}
+                        onClick={() => navigate(navHelper(bar.path))}
                         key={index}
                         className="app_navbar_link_container"
                     >

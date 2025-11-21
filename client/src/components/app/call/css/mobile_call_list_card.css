@@ -1,0 +1,90 @@
+.m_list_call_card_container{
+    height: 4rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    margin-bottom: 0.2rem;
+    padding: 0 0.5rem;
+    border-radius: 0.3rem;
+}
+
+.m_list_call_card_left{
+    height: 100%;
+    aspect-ratio: 1/1;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.m_list_call_card_dp_container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    position: relative;
+}
+
+.m_list_call_card_dp{
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+}
+
+.m_list_call_card_center{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.8rem;
+    font-family: Quicksand, sans-serif;
+    justify-content: center;
+    height: 100%;
+}
+
+.m_list_call_card_center_top{
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.m_list_call_card_center_bottom{
+    display: flex;
+    flex-direction: row;
+    gap: 0.2rem;
+}
+
+.m_list_call_card_center_bottom_icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.1rem;
+}
+
+.m_list_call_card_center_bottom_timestamp{
+    font-weight: 550;
+}
+
+.m_list_call_card_right{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: end;
+    width: 7rem;
+    height: 100%;
+}
+
+.m_list_call_card_right_icons{
+    display: flex;
+    flex-direction: row;
+}
+
+.m_list_call_card_right_duration{
+    font-size: 0.7rem;
+    font-style: italic;
+    font-weight: 550;
+}

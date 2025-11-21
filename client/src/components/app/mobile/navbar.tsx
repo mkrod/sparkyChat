@@ -5,6 +5,7 @@ import { NavLinks } from '@/constants/vars';
 import { useNavigate } from 'react-router';
 import { useNotificationProvider } from '@/constants/providers/notification_provider';
 import type { NotificationCountsIndex } from '@/constants/types';
+import { navHelper } from '@/constants/var_2';
 
 
 type Props = { path: string }
@@ -24,7 +25,7 @@ const MobileNavbar: FC<Props> = ({ path }): JSX.Element => {
         >
             {NavLinks.map((bar, index) => (
                 <div
-                    onClick={() => navigate(bar.path)}
+                    onClick={() => navigate(navHelper(bar.path))}
                     key={index}
                     className="mobile_navbar"
                 >

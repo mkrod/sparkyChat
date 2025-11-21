@@ -20,7 +20,8 @@ const RootLayout: FC = (): JSX.Element => {
       .then((res: Response) => {
         const status = res.status;
         if (status === 200) {
-          navigate("/app");
+          const lastPage = localStorage.getItem("last_page");
+          navigate(lastPage ? lastPage : "/app");
         }
       })
       .catch((err: Error) => {

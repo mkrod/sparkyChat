@@ -63,6 +63,29 @@ export const NavLinks = [
   },
 ]
 
+export const formatDateOnly = (dateInput: Date | string): string => {
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+  const now = new Date();
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = date.toLocaleString("default", { month: "short" });
+
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+
+  hours = hours % 12;
+  hours = hours === 0 ? 12 : hours; // convert 0 → 12
+  const h12 = String(hours).padStart(2, "0");
+
+  if (date.getFullYear() === now.getFullYear()) {
+      return `${day} ${month}, ${h12}:${minutes} ${ampm}`;
+  } else {
+      return `${day} ${month} ${date.getFullYear()}, ${h12}:${minutes} ${ampm}`;
+  }
+};
+
+
 export function formatDate(dateInput: Date | string): string {
   const date = new Date(dateInput);
   const now = new Date();

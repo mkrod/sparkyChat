@@ -5,6 +5,10 @@ server/node_modules/
 .vscode/
 client/dist/
 server/dist/
+peerjs/node_modules/
+peerjs/dist/
+peerjs/.vscode/
+peerjs/.env/
 client/.vscode/
 server/.vscode/
 npm-debug.log*

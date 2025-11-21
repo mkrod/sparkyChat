@@ -63,7 +63,7 @@ export const startCall = async (payload: StartCallPayload, sess: SessionData) =>
             const current = await CallStateModel.findById(call._id);
             if (!current) return;
 
-            
+
             if (["initiated", "ringing"].includes(current.status)) {
                 await CallStateModel.updateOne(
                     { _id: call._id },
@@ -75,7 +75,7 @@ export const startCall = async (payload: StartCallPayload, sess: SessionData) =>
                     initiatorId: current.initiatorId,
                     receiverId: current.receiverId,
                     type: current.type,
-                    startedAt: current.createdAt ?? new Date(),
+                    createdAt: current.createdAt ?? new Date(),
                     endedAt: new Date(),
                     endReason: "missed",
                     status: "missed",
@@ -133,8 +133,60 @@ export const updateCallState = async (payload: UpdateCallStatePayload) => {
         clearCallTimeout(call._id.toString());
     }
 
+    //when status === "connected" update startedAt for the callState so callLog can use it when ended
+    if (call.status === "connected") {
+        await CallStateModel.updateOne({ _id }, { startedAt: new Date() })
+    }
+
+    //calLogs
+    /////////////////////////////
+    ///////////////////////
+    //console.log(call.status)
+    if (call.status === "rejected") {
+        //console.log("creating log for rejection");
+        CallLogModel.create({
+            callId: call._id,
+            initiatorId: call.initiatorId,
+            receiverId: call.receiverId,
+            type: call.type,
+            createdAt: call.createdAt ?? new Date(),
+            endedAt: new Date(),
+            endReason: "rejected",
+            status: "rejected",
+        }).catch((err) => console.log("Error creating rejection log: ", err));
+
+        await Promise.all([
+            sendSocketEvent(call.initiatorId, "call_logs_changed"),
+            sendSocketEvent(call.receiverId, "call_logs_changed"),
+        ]);
+    }
+
+
+
     // 🧹 Delete ended/closed call completely
     if (status === "close") {
+        //if it has not been created from either rejection, timeout, etc
+        //check
+        const isExisted = await CallLogModel.findOne({ callId: _id });
+        if (!isExisted) {
+            await CallLogModel.create({
+                callId: _id,
+                initiatorId: call.initiatorId,
+                receiverId: call.receiverId,
+                type: call.type,
+                createdAt: call.createdAt,
+                startedAt: call.startedAt ?? undefined, //if this is not present means call didnt start
+                endedAt: new Date(),
+                endReason: call.startedAt ? "completed" : "cancelled",
+                status: "ended",
+            })
+
+            await Promise.all([
+                sendSocketEvent(call.initiatorId, "call_logs_changed"),
+                sendSocketEvent(call.receiverId, "call_logs_changed"),
+            ]);
+        }
+
         await CallStateModel.deleteOne({ _id });
     }
 
@@ -146,6 +198,15 @@ export const updateCallState = async (payload: UpdateCallStatePayload) => {
 
 
 export const sendCustomEvent = async (payload: CustomEvent<any>) => {
+    //console.log(payload)
     const { remoteUserId, event, senderId } = payload as CustomEvent<any>;
     await sendSocketEvent(remoteUserId, event, { senderId });
+}
+
+export const markCallSeen = async (payload: { _id: string, myId: string }) => {
+    const { _id, myId } = payload;
+
+    await CallLogModel.updateOne({ _id }, { read: true });
+
+    await sendSocketEvent(myId, "call_logs_changed");
 }

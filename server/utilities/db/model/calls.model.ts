@@ -16,6 +16,7 @@ const callStateSchema = new Schema({
         "connected",
         "reconnecting",
         "ended",
+        "close", // to indicate deletion from cl to server
         "rejected",
       ], 
       default: "initiated" 
@@ -24,6 +25,7 @@ const callStateSchema = new Schema({
     answer: { type: Schema.Types.Mixed },
     initiatorSocketId: { type: String },
     receiverSocketId: { type: String },
+    startedAt: { type: Date },
     lastActivityAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
@@ -40,23 +42,23 @@ const callLogSchema = new Schema(
     initiatorId: { type: String, required: true },
     receiverId: { type: String, required: true },
     type: { type: String, enum: ["voice", "video"], required: true },
-    startedAt: { type: Date, required: true },
+    createdAt: { type: Date, required: true },
+    startedAt: { type: Date },
     acceptedAt: { type: Date },
     endedAt: { type: Date, required: true },
     durationSeconds: { type: Number },
     endReason: { 
       type: String, 
-      enum: ["hangup", "rejected", "missed", "failed"], 
+      enum: ["completed", "rejected", "missed", "failed", "cancelled"], 
       default: "hangup" 
     },
     status: { 
       type: String, 
-      enum: ["completed", "rejected", "missed"], 
-      default: "completed" 
+      enum: ["ended", "rejected", "missed"], 
+      default: "ended" 
     },
     read: { type: Boolean, default: false },
-  },
-  { timestamps: true }
+  }
 );
 
 const CallLogModel = model("CallLog", callLogSchema);
