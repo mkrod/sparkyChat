@@ -1,5 +1,5 @@
 import { serverRequest } from "..";
-import type { Response } from "../types";
+import type { EditUser, Response } from "../types";
 
 export const fetchUserData = async (): Promise<Response> => {
     const response: Response = await serverRequest("get", "user/get");
@@ -66,4 +66,12 @@ export const fetchUserFriends = async (page: number, search_term: string): Promi
 
 export const removeUserAsFriend = async (friend_id: string) => {
     return await serverRequest("delete", "user/remove/friend", { friend_id }, "json") as Response;
+}
+
+export const updateReadReciept = async (newReceipt: boolean): Promise<Response> => {
+    return await serverRequest("put", "user/update/read_receipt", { newReceipt }, "json") as Response<boolean>;
+}
+
+export const updateUserDetails = async (update: EditUser): Promise<Response> => {
+    return await serverRequest("put", "user/update", { update }, "json") as Response;
 }

@@ -1,0 +1,43 @@
+.d_settings_appearance_container{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.d_settings_appearance_section{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.d_settings_appearance_section_header{
+    display: flex;
+    flex-direction: column;
+    font-family: Quicksand, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.d_settings_appearance_section_content{
+    display: flex;
+    flex-direction: column;
+    min-height: 3rem;
+}
+
+.d_settings_appearance_section_content_colors{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.d_settings_appearance_section_content_colors_item_container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem;
+    width: 2.5rem;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    background-color: transparent;
+}

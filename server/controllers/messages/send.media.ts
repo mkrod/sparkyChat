@@ -7,6 +7,8 @@ import { getIoNamespace } from "../../utilities/websocket/ws_conn.js";
 import path from "path";
 import fs from "fs";
 import { spawn } from "child_process";
+import { sendSocketEvent } from "../../utilities/websocket/helper.js";
+import { usersModel } from "../../utilities/db/model/users.js";
 
 const generateThumbnail = async (videoPath: string, thumbnailPath: string) => {
   return new Promise<void>((resolve, reject) => {
@@ -42,7 +44,7 @@ export const sendMedia = async (req: Request, res: Response) => {
     const meta = [metadata].flat();
 
     console.log(JSON.parse(meta[0]).duration)
-    
+
 
     if (!files?.length || !user_id)
       return res.status(400).json({ message: "Invalid request" });
@@ -135,6 +137,17 @@ export const sendMedia = async (req: Request, res: Response) => {
       });
     }
 
+    const user = await usersModel.findOne({ user_id }).lean();
+
+    messages.forEach(async (msg) => {
+      await sendSocketEvent(receiverId, "offline_message", {
+        sender: user?.name?.first + " " + user?.name?.last || "New User",
+        type: msg.type,
+        dp: user?.picture,
+        content: msg.media?.caption || "",
+      });
+    });
+    
     return res.json({ status: 200, message: "success" });
   } catch (error) {
     console.error("Error sending Media:", error);

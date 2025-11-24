@@ -35,11 +35,12 @@ const googleAuthCallback = async (req: Request, res: Response) => {
         const { email, picture, sub: user_id } = decoded;
         const username: string = (email.split("@")[0] || email).toLowerCase().trim();
         const created_at: Date = new Date();
+        const auth_method = "google";
 
         //////// check if user exist in db
         const dbResponse = await usersModel.findOne({ email });
         if (!dbResponse) {
-            await usersModel.insertOne({ user_id, username, email, name, picture, created_at, last_login: created_at });
+            await usersModel.insertOne({ user_id, username, email, name, picture, created_at, last_login: created_at, auth_method });
             console.log("New user created:", email);
         }
         

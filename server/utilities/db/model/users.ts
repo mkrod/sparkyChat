@@ -10,7 +10,9 @@ const userSchema = new mongoose.Schema({
     last_login: { type: Date, default: Date.now },
     privacy: {
         read_receipt: { type: Boolean, default: true },
-    }
+        password: { type: String },
+    },
+    auth_method: { type: String }
 });
 
 const usersModel = mongoose.model("users", userSchema);

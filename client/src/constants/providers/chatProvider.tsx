@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type Dispatch, type FC, type SetStateAction } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState, type Dispatch, type FC, type SetStateAction } from 'react'
 import type { colorScheme, Prompt, Scheme } from '../types';
 import { colors } from '../vars';
 import { useDataProvider } from './data_provider';
@@ -23,6 +23,7 @@ interface ChatContextType {
     setNameFilter: Dispatch<SetStateAction<string>>;
     hideMobileNavbar: boolean;
     setHasCallState: Dispatch<SetStateAction<boolean>>;
+    setAccent: (accent: string) => void;
 }
 
 
@@ -43,7 +44,7 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children }) => {
     const [activeColor, setActiveColor] = useState<colorScheme>(colors[userScheme] || colors[0]); // Default to the first color scheme
 
     useEffect(() => {
-        if(!prompt) return;
+        if (!prompt) return;
         setTimeout(() => setPrompt(undefined), 3000); //reset
     }, [prompt]);
 
@@ -91,6 +92,17 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children }) => {
     const [hasCallState, setHasCallState] = useState<boolean>(false);
     const hideMobileNavbar = [currentChatId, hasCallState].some(Boolean);
 
+    const setAccent = useCallback((accent: string) => {
+        if(!accent) return;
+        document.documentElement.style.setProperty("--app-accent", accent);
+        localStorage.setItem("app-accent", accent);
+    }, []);
+
+    useEffect(() => {
+        const saved = localStorage.getItem("app-accent") || "#0f74f8";
+        setAccent(saved);
+    }, [setAccent]);
+
 
 
     return (
@@ -107,7 +119,8 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children }) => {
                 nameFilter,
                 setNameFilter,
                 hideMobileNavbar,
-                setHasCallState
+                setHasCallState,
+                setAccent
             }}>
             {children}
         </ChatContext.Provider>

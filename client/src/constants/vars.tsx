@@ -1,9 +1,9 @@
 import type { ReactNode, RefObject } from "react";
-import type { colorScheme, GroupedMessages, Message, NotificationCountsIndex, Presence, PreviewMediaData, User } from "./types";
+import type { colorScheme, EditUser, GroupedMessages, Message, NotificationCountsIndex, Presence, PreviewMediaData, User } from "./types";
 import { IoCheckmark, IoCheckmarkDone } from "react-icons/io5";
-import { RxUpdate } from "react-icons/rx";
 import { LuPhone, LuSettings2 } from "react-icons/lu";
 import { TbMessage2 } from "react-icons/tb";
+import { GiCometSpark } from "react-icons/gi";
 
 export const colors: Record<string, colorScheme> = {
   light: {
@@ -16,11 +16,11 @@ export const colors: Record<string, colorScheme> = {
   },
   dark: {
     background: '#242424',
-    fadeBackground: '#000000',
+    fadeBackground: '#1d1d1d',
     text: '#f8f8f8de',
     fadedBorder: '#44444442',
-    textFade: '#f0f0f0',
-    textFadeSecondary: '#adadad',
+    textFade: '#adadad',
+    textFadeSecondary: '#adadadb8',
   },
 }
 
@@ -36,30 +36,43 @@ export const defaultUserObject = {
   picture: "/default_dp.jpg",
   created_at: "Loading...",
   privacy: {
-    read_receipt: false
-  }
+    read_receipt: true
+  },
+  auth_method: "password"
 } as User;
+
+export const defaultEditUserObject = {
+  username: "",
+  email: "",
+  name: {
+    first: "",
+    last: "",
+  },
+  privacy: {
+    password: "",
+  }
+} as EditUser;
 
 export const NavLinks = [
   {
-      name: "Status",
-      icon: <RxUpdate color='blue' size={18} />,
-      path: "/app/status",
+    name: "Spark",
+    icon: <GiCometSpark color='blue' size={18} />,
+    path: "/app/sparky",
   },
   {
-      name: "Calls",
-      icon: <LuPhone color='#940063' size={18} />,
-      path: "/app/calls",
+    name: "Calls",
+    icon: <LuPhone color='#940063' size={18} />,
+    path: "/app/calls",
   },
   {
-      name: "Chats",
-      icon: <TbMessage2 color='green' size={18} />,
-      path: "/app",
+    name: "Chats",
+    icon: <TbMessage2 color='green' size={18} />,
+    path: "/app",
   },
   {
-      name: "Settings",
-      icon: <LuSettings2 color='#6400a7' size={18} />,
-      path: "/app/settings",
+    name: "Settings",
+    icon: <LuSettings2 color='#6400a7' size={18} />,
+    path: "/app/settings",
   },
 ]
 
@@ -79,9 +92,9 @@ export const formatDateOnly = (dateInput: Date | string): string => {
   const h12 = String(hours).padStart(2, "0");
 
   if (date.getFullYear() === now.getFullYear()) {
-      return `${day} ${month}, ${h12}:${minutes} ${ampm}`;
+    return `${day} ${month}, ${h12}:${minutes} ${ampm}`;
   } else {
-      return `${day} ${month} ${date.getFullYear()}, ${h12}:${minutes} ${ampm}`;
+    return `${day} ${month} ${date.getFullYear()}, ${h12}:${minutes} ${ampm}`;
   }
 };
 

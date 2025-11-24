@@ -10,6 +10,7 @@ import AppLayout from './layouts/app_layout'
 import AppHome from './pages/app'
 import { DataProvider } from './constants/providers/data_provider'
 import CallHome from './pages/app/calls/call_home'
+import SettingsHome from './pages/app/settings/settings_home'
 
 const App: FC = (): JSX.Element => {
 
@@ -27,6 +28,7 @@ const App: FC = (): JSX.Element => {
         <Route path='app' element={<AppLayout />}>
           <Route index element={<AppHome />} />
           <Route path='calls' element={<CallHome />} />
+          <Route path='settings' element={<SettingsHome />} />
 
         </Route>
       </Route>

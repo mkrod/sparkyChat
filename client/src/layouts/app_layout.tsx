@@ -15,6 +15,7 @@ import InCall from '@/components/app/call/in_call';
 import Draggable from '@/components/draggable_window';
 import Ringing from '@/components/app/call/ringing';
 import MobileInCall from '@/components/app/call/mobile_in_call';
+import { OffNotifyProvider } from '@/constants/providers/offline_notify_provider';
 
 
 const AppProviders = ({ children }: { children: ReactNode }) => (
@@ -23,7 +24,9 @@ const AppProviders = ({ children }: { children: ReactNode }) => (
       <PeopleProvider>
         <CallProvider>
           <NotificationProvider>
-            {children}
+            <OffNotifyProvider>
+              {children}
+            </OffNotifyProvider>
           </NotificationProvider>
         </CallProvider>
       </PeopleProvider>

@@ -22,6 +22,8 @@ const RootLayout: FC = (): JSX.Element => {
         if (status === 200) {
           const lastPage = localStorage.getItem("last_page");
           navigate(lastPage ? lastPage : "/app");
+        }else{
+          navigate("/");
         }
       })
       .catch((err: Error) => {

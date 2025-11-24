@@ -3,6 +3,8 @@ import { onlineUsersModel } from "../../utilities/db/model/onlineUsers.js";
 import type { markReadPayload, Message, SocketHandlerType } from "../../utilities/types/others.js";
 import type { SessionData } from "express-session";
 import { messageModel } from "../../utilities/db/model/messages.model.js";
+import { sendSocketEvent } from "../../utilities/websocket/helper.js";
+import { usersModel } from "../../utilities/db/model/users.js";
 
 
 
@@ -49,6 +51,16 @@ export const newMessageHandler = async ({ message, io, sess }: { message: Messag
             //console.log("Sent event to: ", i)
         })
         // Emit event to both users
+
+        const user = await usersModel.findOne({ user_id }).lean();
+
+
+        await sendSocketEvent(message.receiverId, "offline_message", {
+            sender: user?.name?.first + " " + user?.name?.last || "New User",
+            type: message.type,
+            dp: user?.picture,
+            content: message.content,
+        });
 
 
     } catch (err) {

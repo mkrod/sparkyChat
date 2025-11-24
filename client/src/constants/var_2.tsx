@@ -1,5 +1,7 @@
+import type { CSSProperties } from "react";
 import { serverURL } from ".";
-import type { CallListTab, UserListTab } from "./types";
+import type { CallListTab, SettingsTab, UserListTab } from "./types";
+
 
 export const userListTabs: UserListTab[] = [
     {
@@ -74,3 +76,47 @@ export const callTabs: CallListTab[] = [
         code: "outgoing",
     }
 ];
+
+
+export const settingsTabs: SettingsTab[] = [
+    {
+        label: "Basic Info",
+        code: "basic_info",
+    },
+    {
+        label: "Notifications",
+        code: "notifications",
+    },
+    {
+        label: "Appearance",
+        code: "appearance",
+    },
+    {
+        label: "Call Options",
+        code: "call_options",
+    },
+    {
+        label: "Privacy & Security",
+        code: "privacy_security",
+    },
+    {
+        label: "Blocked Users",
+        code: "blocked_users",
+    },
+    {
+        label: "Sparky",
+        code: "sparky",
+    }
+];
+
+
+export const appAccentOptions: CSSProperties['background'][] = [
+    "#0f74f8",
+    "#00cc66",
+    "#ff6600",
+    "#cc00ff",
+    "#ff0066",
+    "#00cccc",
+    "#ffcc00",
+    "#cc3300",
+]

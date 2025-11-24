@@ -23,7 +23,7 @@ const DesktopNavbar: FC<Props> = ({ path }): JSX.Element => {
     const { activeColor, userScheme, switchScheme } = useChatProvider();
     const [dpIsLoading, setDpIsLoading] = useState<boolean>(true);
     const { notificationCounts } = useNotificationProvider();
-    const order = ["Chats", "Status", "Calls", "Settings"];
+    const order = ["Chats", "Spark", "Calls", "Settings"];
     const navlinks = NavLinks.sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
     const navigate = useNavigate();
 

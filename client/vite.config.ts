@@ -14,8 +14,8 @@ export default defineConfig({
   },
   server: {
     https: {
-      key: readFileSync(path.resolve(__dirname, "../server/keys/server.key")),
-      cert: readFileSync(path.resolve(__dirname, "../server/keys/server.cert")),
+      key: readFileSync(path.resolve(__dirname, "../server/keys/key.pem")),
+      cert: readFileSync(path.resolve(__dirname, "../server/keys/cert.pem")),
     },
     port: 5175,
   },

@@ -67,14 +67,14 @@ const MsgIn: React.FC<Prop> = ({ stack, message, parentContainer, friendData }):
 
     useEffect(() => {
         if (!message || !parentContainer?.current || !bubbleContainer?.current) return;
-        if (!user.privacy.read_receipt) return;
+        if (!user.privacy.read_receipt || !friendData.privacy.read_receipt) return;
         if (message.status === "read") return;
 
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        console.log(`${message?.chatId} with content ${message?.content} is intersecting`);
+                        //console.log(`${message?.chatId} with content ${message?.content} is intersecting`);
                         // Example: send socket event or mark message as "read"
                         // socket.emit("mark_read", message.id);
                         const payload = {

@@ -40,6 +40,19 @@ export interface User {
     privacy: {
         read_receipt: boolean;
     };
+    auth_method: "google" | "password" | "mkgameo" | "facebook";
+}
+
+export interface EditUser{
+    username: string;
+    email: string;
+    name: {
+        first: string;
+        last: string;
+    };
+    privacy: {
+        password: string;
+    };
 }
 
 
@@ -140,6 +153,12 @@ export interface UserListTab {
 export interface CallListTab {
     label: string;
     code: "all" | "missed" | "incoming" | "outgoing";
+    count?: Promise<number>;
+}
+
+export interface SettingsTab {
+    label: string;
+    code: "basic_info" | "notifications" | "appearance" | "call_options" | "privacy_security" | "blocked_users" | "sparky";
     count?: Promise<number>;
 }
 

@@ -1,0 +1,194 @@
+.d_basic_settings_container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: auto;
+    padding: 1rem 0;
+    font-family: Quicksand, sans-serif;
+}
+
+.d_basic_settings_header {
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem;
+}
+
+.d_basic_settings_header_text {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.d_basic_settings_header_sub_text {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.d_basic_settings_content {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    padding: 1rem 1rem;
+    width: 60%;
+}
+
+
+.d_basic_settings_content_section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    width: 100%;
+}
+
+.d_basic_settings_content_section.picture {
+    flex-direction: row;
+    align-items: center;
+    height: 5rem;
+}
+
+.d_basic_settings_picture_container {
+    height: 5rem;
+    width: 5rem;
+    border-radius: 50%;
+    position: relative;
+    margin-right: 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.d_basic_settings_picture_int {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    justify-content: center;
+    height: 100%;
+}
+
+.d_basic_settings_change_dp_button {
+    font-size: 0.7rem;
+    height: 1.5rem;
+    width: fit-content;
+    padding: 0 0.6rem;
+    font-weight: 600;
+    border-radius: 0.3rem;
+    background: var(--app-accent);
+}
+
+.d_basic_settings_content_section.dual_field {
+    flex-direction: row;
+    gap: 2rem;
+    align-items: center;
+    height: fit-content;
+    width: 100%;
+}
+
+.d_basic_settings_field_container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    flex: 1;
+}
+
+.d_basic_settings_field_label {
+    font-weight: 600;
+}
+
+.d_basic_settings_field_input_container {
+    height: 2rem;
+    width: 100%;
+    border-radius: 0.3rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.d_basic_settings_field {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    height: 100%;
+    width: 100%;
+    padding: 0 0.5rem;
+    font-weight: 600;
+}
+
+.d_basic_settings_field:disabled {
+    cursor: not-allowed;
+}
+
+.d_basic_settings_field_switch_container {
+    position: relative;
+    height: 2rem;
+    width: 3.5rem;
+}
+
+.d_basic_settings_field_switch {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.d_basic_settings_field_switch_slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 1rem;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    display: flex;
+    align-items: center;
+}
+
+.d_basic_settings_field_switch_slider::before {
+    position: absolute;
+    content: "";
+    height: 1.5rem;
+    width: 1.5rem;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 1rem;
+}
+
+.d_basic_settings_field_switch:checked+.d_basic_settings_field_switch_slider {
+    background-color: var(--app-accent);
+}
+
+.d_basic_settings_field_switch:checked+.d_basic_settings_field_switch_slider:before {
+    -webkit-transform: translateX(1.5rem);
+    -ms-transform: translateX(1.5rem);
+    transform: translateX(1.5rem);
+}
+
+
+.d_basic_settings_field_icon {
+    width: 2rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.d_basic_settings_content_section.submit{
+    padding: 2rem 1rem;
+}
+
+.d_basic_settings_update_button{
+    padding: 0.3rem 1rem;
+    width: fit-content;
+    background-color: var(--app-accent);
+    border-radius: 0.4rem;
+    display: flex;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
