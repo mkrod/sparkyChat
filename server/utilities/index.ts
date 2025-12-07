@@ -1,8 +1,10 @@
 import { type Response } from "express";
 import type { CustomResponse } from "./types/others.js";
 
+
+
 const sendError = (res: Response, message: string, status: number = 400) => {
-    res.status(status).send(`
+  res.status(status).send(`
       <!DOCTYPE html>
       <html lang="en">
       <head>
@@ -47,15 +49,44 @@ const sendError = (res: Response, message: string, status: number = 400) => {
 };
 
 
-const customResponse = ({message, status, data}: { message?: string; status?: number; data?: any }): CustomResponse => ({
+const customResponse = ({ message, status, data }: { message?: string; status?: number; data?: any }): CustomResponse => ({
   message, status, data
 });
 
 
+export const logo = "https://smbs.netlify.app/logo.png";
+
+
+export function flattenToDotNotation(obj: any, parentKey = "", result: any = {}) {
+  for (const key of Object.keys(obj)) {
+    const value = obj[key];
+    const newKey = parentKey ? `${parentKey}.${key}` : key;
+
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      flattenToDotNotation(value, newKey, result);
+    } else {
+      result[newKey] = value;
+    }
+  }
+  return result;
+}
+
+
+
+export const defaultSettings = {
+  notification: {
+    friend_request: true,
+    declined_request: true,
+    accepted_request: true,
+    unfriended: true,
+  }
+}
+
 
 declare module "express-session" {
   interface SessionData {
-      user_id?: string;
+    user_id?: string;
   }
 }
+
 export { sendError, customResponse };

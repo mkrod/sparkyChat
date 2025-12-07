@@ -91,3 +91,15 @@ export interface CustomEvent<T = any> {
     event: string;
     data?: T;
 }
+
+export interface NotificationSettings {
+    friend_request: boolean,
+    declined_request: boolean,
+    accepted_request: boolean,
+    unfriended: boolean,
+}
+
+export interface Settings {
+    user_id: string;
+    notification: NotificationSettings;
+}

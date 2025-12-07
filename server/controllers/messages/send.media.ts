@@ -131,7 +131,7 @@ export const sendMedia = async (req: Request, res: Response) => {
 
     if (socketIds.length > 0) {
       io.to(socketIds).emit("new_message", {
-        messages,
+        message: messages,
         from: user_id,
         to: receiverId,
       });

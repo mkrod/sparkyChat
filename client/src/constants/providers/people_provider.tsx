@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState, type Dispatch, type ReactNode, type SetStateAction } from "react";
-import type { AllFriendsType, AllRequestsType, AllUsersType, Response } from "../types";
+import type { AllFriendsType, AllRequestsType, AllUsersType, Response, SoundsIndexKey } from "../types";
 import { fetchAllUserRequests, fetchAllUsers, fetchUserFriends } from "../user/controller";
 import { useChatProvider } from "./chatProvider";
 import socket from "../socket.io/socket_conn";
+import { defaultSounds } from "../var_2";
 
 
 interface PeopleContextType {
@@ -39,7 +40,7 @@ export const PeopleProvider = ({ children }: { children: ReactNode }) => {
         fetchAllUsers(page, nameFilter)
             .then((res: Response) => {
                 setAllusers(res.data as AllUsersType)
-                console.log(res)
+                //console.log(res)
             })
             .catch((err) => console.log("Cannot fetch all users: ", err))
             .finally(() => {
@@ -50,7 +51,7 @@ export const PeopleProvider = ({ children }: { children: ReactNode }) => {
 
     /// frienRequestsList
     const [friendRequests, setFriendRequests] = useState<AllRequestsType | undefined>(undefined);
-    const [fetchFriendRequests, setFetchFriendRequests] = useState<boolean>(false);
+    const [fetchFriendRequests, setFetchFriendRequests] = useState<boolean>(true);
     const [requestPage, setRequestPage] = useState<number>(1);
 
     useEffect(() => {
@@ -58,7 +59,7 @@ export const PeopleProvider = ({ children }: { children: ReactNode }) => {
         fetchAllUserRequests(requestPage, nameFilter)
             .then((res: Response) => {
                 setFriendRequests(res.data as AllRequestsType)
-                console.log(res)
+                //console.log(res)
             })
             .catch((err) => console.log("Cannot fetch all request: ", err))
             .finally(() => {
@@ -91,16 +92,23 @@ export const PeopleProvider = ({ children }: { children: ReactNode }) => {
     ////event triggers
 
     useEffect(() => {
+        const str = localStorage.getItem("notif_sounds");
+        const sounds: Record<SoundsIndexKey, string> = str ? JSON.parse(str) : defaultSounds;
+
         const handleRequestEvent = () => {
             setFetchFriendRequests(true);
             setFetchUsers(true);
+            const audio = new Audio(`/sound/${sounds.friend_request}`);
+            audio.play();
         }
         const handleFriendEvent = () => {
             setFetchFriends(true);
             setFetchUsers(true);
+            const audio = new Audio(`/sound/${sounds.accepted_request}`);
+            audio.play();
         }
-        socket.on("friend_request", handleRequestEvent);
-        socket.on("friend", handleFriendEvent);
+        socket.on("friend_request", handleRequestEvent); // new friend Request
+        socket.on("friend", handleFriendEvent); //friend list updated
         return () => {
             socket.off("friend_request", handleRequestEvent);
             socket.off("friend", handleFriendEvent);

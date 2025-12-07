@@ -135,8 +135,8 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         peerRef.current = peer;
 
         // ------------------- Peer Events -------------------
-        peer.on("open", (id) => {
-            console.log("✅ Peer connection opened with ID:", id);
+        peer.on("open", () => {
+            //console.log("✅ Peer connection opened with ID:", id);
         });
 
         peer.on("connection", (conn) => {
@@ -205,7 +205,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
             clearTimeout(retryTimeoutRef.current);
             retryTimeoutRef.current = null;
         }
-        console.log("⏹ Retry cancelled");
+        //console.log("⏹ Retry cancelled");
     };
 
     const startCall = useCallback(async (payload: StartCallPayload) => {
@@ -244,7 +244,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
 
                 call.on("close", () => {
-                    console.log("📞 Call ended");
+                    //console.log("📞 Call ended");
                     endCall();
                     cancelRetry(); // stop any pending retries
                 });
@@ -278,7 +278,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
             attemptCall(); // first attempt
             socket.emit("start_call", { ...payload });
-            console.log("✅ Call started (caller)");
+           // console.log("✅ Call started (caller)");
         } catch (err) {
             console.error("❌ Error starting call:", err);
             setPrompt({ type: "error", title: "Failed to start " + payload.type + " call" });
@@ -309,7 +309,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         });
 
         call.on("close", () => {
-            console.log("Call ended");
+            //console.log("Call ended");
             endCall();
         });
 
@@ -361,7 +361,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
             senderId: localStream ? localStream.user_id : "",
         }
         socket.emit("custom_event", payload)
-        console.log("Video is now", videoTrack.enabled ? "ON" : "OFF");
+        //console.log("Video is now", videoTrack.enabled ? "ON" : "OFF");
     }, [localStream, remoteStream]);
 
 
@@ -379,7 +379,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
         }
         socket.emit("custom_event", payload)
 
-        console.log("Mic is now", audioTrack.enabled ? "ON" : "OFF");
+        //console.log("Mic is now", audioTrack.enabled ? "ON" : "OFF");
     }, [localStream, remoteStream]);
 
 
@@ -516,7 +516,7 @@ export const CallProvider = ({ children }: { children: ReactNode }) => {
 
         oldTrack.stop();
 
-        console.log("Camera switched");
+        //console.log("Camera switched");
     }, [localStream]);
 
 

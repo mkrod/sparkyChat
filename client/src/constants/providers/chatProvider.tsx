@@ -45,7 +45,7 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children }) => {
 
     useEffect(() => {
         if (!prompt) return;
-        setTimeout(() => setPrompt(undefined), 3000); //reset
+        setTimeout(() => setPrompt(undefined), 5000); //reset
     }, [prompt]);
 
 
@@ -93,7 +93,7 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children }) => {
     const hideMobileNavbar = [currentChatId, hasCallState].some(Boolean);
 
     const setAccent = useCallback((accent: string) => {
-        if(!accent) return;
+        if (!accent) return;
         document.documentElement.style.setProperty("--app-accent", accent);
         localStorage.setItem("app-accent", accent);
     }, []);
@@ -102,6 +102,7 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children }) => {
         const saved = localStorage.getItem("app-accent") || "#0f74f8";
         setAccent(saved);
     }, [setAccent]);
+
 
 
 
@@ -120,7 +121,7 @@ export const ChatProvider: FC<ChatProviderProps> = ({ children }) => {
                 setNameFilter,
                 hideMobileNavbar,
                 setHasCallState,
-                setAccent
+                setAccent,
             }}>
             {children}
         </ChatContext.Provider>

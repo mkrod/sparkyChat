@@ -1,5 +1,5 @@
 import { type Request, type Response } from "express";
-import { customResponse } from "../../utilities/index.js";
+import { customResponse, flattenToDotNotation } from "../../utilities/index.js";
 import { usersModel } from "../../utilities/db/model/users.js";
 import type { SocketID } from "../../utilities/types/others.js";
 import { onlineUsersModel } from "../../utilities/db/model/onlineUsers.js";
@@ -48,12 +48,61 @@ const updateUserDetails = async (req: Request, res: Response) => {
   if (!user_id) return res.json({ message: "LoggedOut", status: 403 });
 
   try {
-
     const { update } = req.body;
+
     console.log(update);
 
-  } catch (error) {
+    // Username unique check
+    if (update.username) {
+      const { username } = update;
+      const existing = await usersModel.findOne({ username });
+      if (existing) {
+        return res.json({ status: 403, message: "Username already exist" });
+      }
+    }
 
+    // Flatten the update object
+    const flattened = flattenToDotNotation(update);
+
+    const result = await usersModel.updateOne(
+      { user_id },
+      { $set: flattened } // <-- IMPORTANT
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.json({ status: 403, message: "update failed" });
+    }
+
+    return res.json({ status: 200, message: "success" });
+
+  } catch (error) {
+    console.log("Failed to update user details: ", error);
+    return res.json({ status: 403, message: "update failed" });
+  }
+};
+
+
+export const updateUserProfilePicture = async (req: Request, res: Response) => {
+  const { user_id } = req.session;
+  if (!user_id) return res.json({ message: "LoggedOut", status: 403 });
+
+  try {
+    if (!req.file) {
+      return res.json({ status: 400, message: "No file uploaded" });
+    }
+
+    const { filename } = req.file;
+    const link = `${process.env.SERVER_URL}/uploads/${filename}`;
+
+    const result = await usersModel.updateOne({ user_id }, { picture: link });
+    if (result.modifiedCount === 0) {
+      return res.json({ status: 403, message: "update failed" });
+    }
+
+    return res.json({ status: 200, message: "success" });
+  } catch (error) {
+    console.log("Failed to update user dp: ", error);
+    return res.json({ status: 403, message: "update failed" });
   }
 }
 

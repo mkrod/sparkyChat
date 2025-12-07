@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useState, type Dispatch, type FC, type SetStateAction } from 'react'
-import { type Response, type User } from '../types';
+import { type Response, type SoundsIndexKey, type User } from '../types';
 import { fetchUserData } from '../user/controller';
 import { defaultUserObject } from '../vars';
 import socket from '../socket.io/socket_conn';
+import { defaultSounds } from '../var_2';
 
 
 interface ConnContextType {
@@ -57,6 +58,25 @@ export const ConnectionProvider: FC<ConnProviderProps> = ({ children }) => {
       .finally(() => setFetchingUser(false));
 
   }, [fetchingUser])
+
+  //should be in useDataProvider but provider hierarchy, restriction, i need user_id , i cant use outside here, Data provider have not access here
+
+  useEffect(() => {
+    const str = localStorage.getItem("notif_sounds");
+    const sounds: Record<SoundsIndexKey, string> = str ? JSON.parse(str) : defaultSounds;
+
+
+    const handleNewMessage = ({ to }: { to: string }) => {
+        if (to === user.user_id) { //i received a message, play sound
+            const audio = new Audio(`/sound/${sounds.message}`);
+            audio.play();
+        } //else, i just need to update my ui, which is done in DataProvider
+    }
+    socket.on("new_message", handleNewMessage);
+    return () => {
+        socket.off("new_message", handleNewMessage);
+    }
+}, [socket, user])
 
 
   return (

@@ -93,7 +93,7 @@ const getUserMessageList = async (req: Request, res: Response) => {
 
 
 const getMutualChat = async (req: Request, res: Response) => {
-  const io = getIoNamespace();
+  // const io = getIoNamespace();
 
   try {
     //chatId represent other user here, supposed to use receiverId

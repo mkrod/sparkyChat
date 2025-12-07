@@ -7,6 +7,7 @@ interface DraggableProps {
   header?: string;
   icon?: ReactNode;
   bubbleContent?: ReactNode;
+  onCancel?: () => void;
   children?: ReactNode;
   minWidth?: number;
   minHeight?: number;
@@ -16,6 +17,7 @@ const Draggable: React.FC<DraggableProps> = ({
   header = "Window",
   icon,
   bubbleContent,
+  onCancel,
   children,
   minWidth,
   minHeight
@@ -251,7 +253,7 @@ const Draggable: React.FC<DraggableProps> = ({
           <button onClick={toggleFullscreen}>
             {isFullscreen ? <BiWindows size={17} /> : <MdFullscreen size={17} />}
           </button>
-          <button onClick={() => setIsMinimized(true)}>
+          <button onClick={onCancel}>
             <MdClose size={17} />
           </button>
         </div>

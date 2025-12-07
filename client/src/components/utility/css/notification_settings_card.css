@@ -1,0 +1,33 @@
+.d_notif_settings_card{
+    display: flex;
+    flex-direction: row;
+    border: 0.5px solid transparent;
+    padding: 0.7rem;
+    border-radius: 0.5rem;
+    font-family: Quicksand, sans-serif;
+    width: 45rem;
+    max-width: 100%;
+}
+
+.d_notif_settings_card_content{
+    display: flex;
+    flex-direction: column;
+}
+
+.d_notif_settings_card_title{
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+
+.d_notif_settings_card_details{
+    font-weight: 600;
+    font-size: 0.7rem;
+}
+
+.d_notif_settings_card_value{
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

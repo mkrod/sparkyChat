@@ -75,3 +75,24 @@ export const updateReadReciept = async (newReceipt: boolean): Promise<Response> 
 export const updateUserDetails = async (update: EditUser): Promise<Response> => {
     return await serverRequest("put", "user/update", { update }, "json") as Response;
 }
+
+
+export const updateUserDp = async (formData: FormData): Promise<Response> => {
+    return await serverRequest("put", "user/update/picture", formData, "formdata") as Response;
+}
+
+export const fetchUserNotifications = async (): Promise<Response> => {
+    return await serverRequest("get", "user/notification");
+}
+
+export const markAllNoteRead = async (): Promise<Response> => {
+    return await serverRequest("put", "notification/read_all");
+}
+
+export const fetchSettings = async (): Promise<Response> => {
+    return await serverRequest("get", "settings/");
+}
+
+export const updateSettings = async (setting: Record<string, any>): Promise<Response> => {
+    return await serverRequest("put", "settings/update", setting, "json");
+}

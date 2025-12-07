@@ -47,7 +47,11 @@ export const newMessageHandler = async ({ message, io, sess }: { message: Messag
         //console.log("Socket in sendMessage from " + user_id + ": ", socketIds)
 
         socketIds.forEach((i) => {
-            io.to(i).emit("new_message");
+            io.to(i).emit("new_message", {
+                message: [message],
+                from: user_id,
+                to: message.receiverId,
+            });
             //console.log("Sent event to: ", i)
         })
         // Emit event to both users

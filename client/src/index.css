@@ -40,6 +40,7 @@
 /* REQUIRED for 100vh / layout components */
 html, body, #root {
   height: 100%;
+  position: relative;
 }
 
 /* Inputs inherit font */
@@ -76,6 +77,16 @@ button{
   justify-content: center;
   cursor: pointer;
   border: none;
+}
+
+button:disabled{
+  background-color: #636363;
+  color: #c9c9c9;
+  cursor: not-allowed;
+}
+
+input:disabled{
+  cursor: not-allowed;
 }
 
 @media (prefers-color-scheme: light) {

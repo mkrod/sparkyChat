@@ -43,7 +43,7 @@ export interface User {
     auth_method: "google" | "password" | "mkgameo" | "facebook";
 }
 
-export interface EditUser{
+export interface EditUser {
     username: string;
     email: string;
     name: {
@@ -117,7 +117,7 @@ export interface Presence {
     status: "online" | "offline" | "away" | "busy";
 }
 
-export type NotificationCountsIndex = "chats" | "calls";
+export type NotificationCountsIndex = "chats" | "calls" | "base" | "friends_request";
 
 export interface AppLayoutContextType {
     currentChatId: string | null;
@@ -316,4 +316,45 @@ export interface CustomEvent<T = any> {
     remoteUserId: string;
     event: string;
     data?: T;
+}
+
+
+export interface Notification {
+    _id: string;
+    user_id: string; // receiver of the notification
+    type: "new_friend_request" | "friend_notification" | "message" | "others";
+    title: string;
+    content: string;
+    read: boolean; // ✅ new field
+    metadata?: {
+        friend?: User;
+    };
+    createdAt: Date;
+}
+
+
+export interface NotificationSettingsText {
+    title: string,
+    details: string;
+}
+
+export interface IDLABELVALUE {
+    id: string;
+    label: string;
+    value: string;
+}
+
+export type SoundsIndexKey = "friend_request" | "declined_request" | "accepted_request" | "unfriended" | "message";
+
+
+export interface NotificationSettings {
+    friend_request: boolean,
+    declined_request: boolean,
+    accepted_request: boolean,
+    unfriended: boolean,
+}
+
+export interface Settings {
+    user_id: string;
+    notification: NotificationSettings;
 }

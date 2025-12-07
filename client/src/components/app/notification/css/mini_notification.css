@@ -1,0 +1,71 @@
+.mini_notify_container{
+    position: absolute;
+    scale: 0;
+    opacity: 0;
+    left: 1rem;
+    bottom: 1rem;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    transition: opacity ease-in-out .375s;
+    z-index: 10;
+    border-radius: 0.4rem;
+    font-family: Quicksand, sans-serif;
+}
+
+.mini_notify_container.open{
+    scale: 1;
+    opacity: 1;
+}
+
+.mini_notify_header, .mini_notify_footer{
+    display: flex;
+    flex-direction: row;
+    height: 3rem;
+    align-items: center;
+    padding: 1rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    gap: 0.5rem;
+}
+
+.mini_notify_mark_all{
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.2rem 1rem;
+    background-color: var(--app-accent);
+    box-shadow: 0 0 20px transparent;
+    margin-left: auto;
+    border-radius: 0.3rem;
+}
+
+.mini_notify_icon{
+    height: 1.5rem;
+    width: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.mini_notify_content{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    flex-shrink: 0;
+    border-top: 0.5px solid transparent;
+    border-bottom: 0.5px solid transparent;
+    padding: 0 1rem;
+    overflow: auto;
+}
+
+.mini_notify_view_all{
+    font-size: 0.7rem;
+    width: 100%;
+    color: var(--app-accent);
+    justify-content: center;
+    cursor: pointer;
+}

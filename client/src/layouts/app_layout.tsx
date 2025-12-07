@@ -8,7 +8,7 @@ import { UtilityProvider } from '@/constants/providers/utility_provider';
 import { PeopleProvider } from '@/constants/providers/people_provider';
 import { CallProvider, useCallProvider } from '@/constants/providers/call_provider';
 import MobileNavbar from '@/components/app/mobile/navbar';
-import { NotificationProvider } from '@/constants/providers/notification_provider';
+import { NotificationProvider, useNotificationProvider } from '@/constants/providers/notification_provider';
 import { LuPhone, LuVideo } from 'react-icons/lu';
 import type { CallState } from '@/constants/types';
 import InCall from '@/components/app/call/in_call';
@@ -16,6 +16,8 @@ import Draggable from '@/components/draggable_window';
 import Ringing from '@/components/app/call/ringing';
 import MobileInCall from '@/components/app/call/mobile_in_call';
 import { OffNotifyProvider } from '@/constants/providers/offline_notify_provider';
+import MiniNotification from '@/components/app/notification/mini_notification';
+import { SettingsProvider } from '@/constants/providers/settings.provider';
 
 
 const AppProviders = ({ children }: { children: ReactNode }) => (
@@ -25,7 +27,9 @@ const AppProviders = ({ children }: { children: ReactNode }) => (
         <CallProvider>
           <NotificationProvider>
             <OffNotifyProvider>
-              {children}
+              <SettingsProvider>
+                {children}
+              </SettingsProvider>
             </OffNotifyProvider>
           </NotificationProvider>
         </CallProvider>
@@ -38,6 +42,7 @@ const AppProviders = ({ children }: { children: ReactNode }) => (
 const InnerLayout: FC = (): JSX.Element => {
   const { isMobile, hideMobileNavbar, activeColor } = useChatProvider();
   const path = useLocation().pathname;
+  const { openMiniNotify, setOpenMiniNotify } = useNotificationProvider();
 
 
   //////////////////call///////////////////
@@ -73,6 +78,11 @@ const InnerLayout: FC = (): JSX.Element => {
         <DesktopNavbar path={path} />
       </div>
       <div className='app_layout_content_container'>
+        <MiniNotification
+          isOpen={openMiniNotify}
+          onClose={() => setOpenMiniNotify(false)}
+        />
+
         <Outlet />
 
         {/* In call Layout, Here Because the whole app can see it, its not one page oriented  */}

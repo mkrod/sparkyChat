@@ -14,6 +14,9 @@ import userRoutes from "./routes/user.routes.js";
 import proxyRoutes from "./routes/proxy.routes.js";
 import messageRoutes from "./routes/message.routes.js";
 import callRoutes from "./routes/call.routes.js";
+import mailerRoutes from "./routes/mailer.routes.js";
+import notificationRoutes from "./routes/notification.routes.js"
+import settingsRoutes from "./routes/settings.routes.js"
 
 ///////////////////////////////////////
 ///////////////custom middleware////////////////////////
@@ -71,6 +74,9 @@ app.use("/api/user", userRoutes);
 app.use("/api/proxy", proxyRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/call", callRoutes)
+app.use("/api/mailer", mailerRoutes)
+app.use("/api/notification", notificationRoutes)
+app.use("/api/settings", settingsRoutes)
 
 // Health check
 app.get("/api/health", (_, res) => res.sendStatus(200));

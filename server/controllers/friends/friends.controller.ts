@@ -8,9 +8,10 @@ import { onlineUsersModel } from "../../utilities/db/model/onlineUsers.js";
 import { getIoNamespace } from "../../utilities/websocket/ws_conn.js";
 import { usersModel } from "../../utilities/db/model/users.js";
 import { sendSocketEvent } from "../../utilities/websocket/helper.js";
+import { settingsModel } from "../../utilities/db/model/settings.model.js";
+import { getSpecificSetting } from "../settings/settings.controller.js";
 
 // Helper: send socket event if user is online
-
 
 // 📩 Send a friend request
 export const sendFriendRequest = async (req: Request, res: Response) => {
@@ -22,22 +23,31 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
 
   try {
     const existing = await friendRequestModel.findOne({ user_id, requested: friend_id });
-    if (existing)
-      return res.status(409).json({ status: 409, message: "Friend request already sent" });
+    if (existing) return res.status(409).json({ status: 409, message: "Friend request already sent" });
 
     const result = await friendRequestModel.create({ user_id, requested: friend_id });
 
-    const notification = await notificationModel.create({
-      user_id: friend_id,
-      type: "new_friend_request",
-      title: "New Friend Request",
-      content: `You received a friend request.`,
-      metadata: { friend: { user_id } },
-      read: false,
-    });
+    //if friend have notification on
+    const friendAllowedRequestNotification = await getSpecificSetting(friend_id, "notification.friend_request", true);
+    //console.log(friendAllowedRequestNotification);
+
+    if (friendAllowedRequestNotification) {
+      const username = (await usersModel.findOne({ user_id }))?.toJSON().username;
+      //console.log(username)
+      if (username) {
+        const notification = await notificationModel.create({
+          user_id: friend_id,
+          type: "new_friend_request",
+          title: "New Friend Request",
+          content: `${username} sent you a friend request.`,
+          metadata: { friend: { user_id } },
+          read: false,
+        });
+      }
+      await sendSocketEvent(friend_id, "new_notification");
+    }
 
     await sendSocketEvent(friend_id, "friend_request");
-    await sendSocketEvent(friend_id, "new_notification", notification);
 
     res.status(200).json({
       status: 200,
@@ -49,6 +59,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
     res.status(500).json({ status: 500, message: "Failed to send friend request" });
   }
 };
+
 
 // ❌ Cancel sent request
 export const cancelSentRequest = async (req: Request, res: Response) => {
@@ -63,17 +74,23 @@ export const cancelSentRequest = async (req: Request, res: Response) => {
     if (!deleted)
       return res.status(404).json({ status: 404, message: "Friend request not found" });
 
-    const notification = await notificationModel.create({
-      user_id: friend_id,
-      type: "friend_notification",
-      title: "Friend Request Cancelled",
-      content: "A friend request sent to you has been cancelled.",
-      metadata: { friend: { user_id } },
-      read: false,
-    });
+    const friendAllowedCancelledNotification = await getSpecificSetting(friend_id, "notification.cancelled", true);
+    if (friendAllowedCancelledNotification) {
+      const username = (await usersModel.findOne({ user_id }))?.toJSON().username;
 
+      if (username) {
+        const notification = await notificationModel.create({
+          user_id: friend_id,
+          type: "friend_notification",
+          title: "Friend Request Cancelled",
+          content: `${username} cancelled friend request sent to you.`,
+          metadata: { friend: { user_id } },
+          read: false,
+        });
+      }
+      await sendSocketEvent(friend_id, "new_notification");
+    }
     await sendSocketEvent(friend_id, "friend_request");
-    await sendSocketEvent(friend_id, "new_notification", notification);
 
     res.status(200).json({ status: 200, message: "Friend request cancelled" });
   } catch (err) {
@@ -110,29 +127,25 @@ export const acceptUserRequest = async (req: Request, res: Response) => {
       { upsert: true }
     );
 
-    const [notif1, notif2] = await notificationModel.create([
-      {
-        user_id: friend_id,
-        type: "friend_notification",
-        title: "Friend Request Accepted",
-        content: "Your friend request was accepted.",
-        metadata: { friend: { user_id } },
-        read: false,
-      },
-      {
-        user_id,
-        type: "friend_notification",
-        title: "New Friend Added",
-        content: "You are now friends.",
-        metadata: { friend: { user_id: friend_id } },
-        read: false,
-      },
-    ]);
+    const friendAllowedAcceptedNotification = await getSpecificSetting(friend_id, "notification.accepted_request", true);
+    if (friendAllowedAcceptedNotification) {
+      const username = (await usersModel.findOne({ user_id }))?.toJSON().username;
+      const notif1 = await notificationModel.create(
+        {
+          user_id: friend_id,
+          type: "friend_notification",
+          title: "Friend Request Accepted",
+          content: `${username} accepted your friend request.`,
+          metadata: { friend: { user_id } },
+          read: false,
+        },
+      );
+
+      await sendSocketEvent(friend_id, "new_notification", notif1);
+    }
 
     await sendSocketEvent(friend_id, "friend");
     await sendSocketEvent(friend_id, "friend_request"); // update his request list
-    await sendSocketEvent(friend_id, "new_notification", notif1);
-    await sendSocketEvent(user_id, "new_notification", notif2);
 
     res.status(200).json({ status: 200, message: "Friend request accepted" });
   } catch (err) {
@@ -158,17 +171,25 @@ export const declineUserRequest = async (req: Request, res: Response) => {
     if (!deleted)
       return res.status(404).json({ status: 404, message: "Friend request not found" });
 
-    const notification = await notificationModel.create({
-      user_id: friend_id,
-      type: "friend_notification",
-      title: "Friend Request Declined",
-      content: "Your friend request was declined.",
-      metadata: { friend: { user_id } },
-      read: false,
-    });
+    const friendAllowedDeclinedNotification = await getSpecificSetting(friend_id, "notification.declined_request", true);
+    if (friendAllowedDeclinedNotification) {
+      const username = (await usersModel.findOne({ user_id }))?.toJSON().username;
+
+      if (username) {
+        const notification = await notificationModel.create({
+          user_id: friend_id,
+          type: "friend_notification",
+          title: "Friend Request Declined",
+          content: `${username} declined Your friend request.`,
+          metadata: { friend: { user_id } },
+          read: false,
+        });
+      }
+      await sendSocketEvent(friend_id, "new_notification");
+    }
 
     await sendSocketEvent(friend_id, "friend_request");
-    await sendSocketEvent(friend_id, "new_notification", notification);
+
 
     res.status(200).json({ status: 200, message: "Friend request declined" });
   } catch (err) {
@@ -450,26 +471,32 @@ export const removeUserAsFriend = async (req: Request, res: Response) => {
       ],
     });
 
-    // 🔔 Create notification for the removed friend
-    const notification = await notificationModel.create({
-      user_id: friend_id, // receiver
-      type: "friend_notification",
-      title: "Friend removed",
-      content: `User ${user_id} has removed you as a friend.`,
-      read: false,
-      metadata: {
-        friend: { user_id },
-      },
-      created_at: new Date(),
-    });
+    const friendAllowedUnfriendNotification = await getSpecificSetting(friend_id, "notification.unfriended", true);
+
+    if (friendAllowedUnfriendNotification) {
+      const username = (await usersModel.findOne({ user_id }))?.toJSON().username;
+      if (username) {// 🔔 Create notification for the removed friend
+        const notification = await notificationModel.create({
+          user_id: friend_id, // receiver
+          type: "friend_notification",
+          title: "Friend removed",
+          content: `${username} has removed you as a friend.`,
+          read: false,
+          metadata: {
+            friend: { user_id },
+          },
+          created_at: new Date(),
+        });
+      }
+      await sendSocketEvent(friend_id, "new_notification");
+    }
 
     // 🚀 Emit real-time event to the removed user's socket
     const data = {
       user_id,
       message: "You were removed from the friend list",
-      notification,
     };
-    sendSocketEvent(friend_id, "friend_removed", data);
+    await sendSocketEvent(friend_id, "friend_removed", data);
 
     return res.status(200).json({
       status: 200,

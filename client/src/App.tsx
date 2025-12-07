@@ -11,6 +11,7 @@ import AppHome from './pages/app'
 import { DataProvider } from './constants/providers/data_provider'
 import CallHome from './pages/app/calls/call_home'
 import SettingsHome from './pages/app/settings/settings_home'
+import SparkyLayout from './pages/app/sparky'
 
 const App: FC = (): JSX.Element => {
 
@@ -29,6 +30,7 @@ const App: FC = (): JSX.Element => {
           <Route index element={<AppHome />} />
           <Route path='calls' element={<CallHome />} />
           <Route path='settings' element={<SettingsHome />} />
+          <Route path='sparky' element={<SparkyLayout />} />
 
         </Route>
       </Route>

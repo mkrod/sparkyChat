@@ -2,7 +2,7 @@ import { AppLogo, Appname, serverURL } from '@/constants'
 import { useState, type FC, type JSX } from 'react'
 import "./css/navbar.css";
 import { useConnProvider } from '@/constants/providers/conn_provider';
-import { TbMessage2 } from 'react-icons/tb';
+import { TbUserBolt } from 'react-icons/tb';
 import { LuBell, LuPhone } from 'react-icons/lu';
 import { BiExit } from 'react-icons/bi';
 import { useChatProvider } from '@/constants/providers/chatProvider';
@@ -22,7 +22,7 @@ const DesktopNavbar: FC<Props> = ({ path }): JSX.Element => {
     const { user } = useConnProvider();
     const { activeColor, userScheme, switchScheme } = useChatProvider();
     const [dpIsLoading, setDpIsLoading] = useState<boolean>(true);
-    const { notificationCounts } = useNotificationProvider();
+    const { notificationCounts, openMiniNotify, setOpenMiniNotify } = useNotificationProvider();
     const order = ["Chats", "Spark", "Calls", "Settings"];
     const navlinks = NavLinks.sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
     const navigate = useNavigate();
@@ -56,15 +56,15 @@ const DesktopNavbar: FC<Props> = ({ path }): JSX.Element => {
                                 />
                             </div>
                         )}
-                        <ImageViewer 
-                         src={`${serverURL}/proxy?url=${encodeURIComponent(user.picture)}`}
-                         options={{
-                            thumbnailClassName: "app_navbar_user_picture",
-                            height: "100%",
-                            width: "100%",
-                            rounded: true
-                         }}
-                         onload={() => setTimeout(() => setDpIsLoading(false), 2000)}
+                        <ImageViewer
+                            src={`${serverURL}/proxy?url=${encodeURIComponent(user.picture)}`}
+                            options={{
+                                thumbnailClassName: "app_navbar_user_picture",
+                                height: "100%",
+                                width: "100%",
+                                rounded: true
+                            }}
+                            onload={() => setTimeout(() => setDpIsLoading(false), 2000)}
                         />
                         {/*<img onLoad={() => setTimeout(() => setDpIsLoading(false), 2000)} src={`${serverURL}/proxy?url=${encodeURIComponent(user.picture)}`} className='app_navbar_user_picture' />*/}
                     </div>
@@ -82,10 +82,24 @@ const DesktopNavbar: FC<Props> = ({ path }): JSX.Element => {
                         <LuPhone />
                     </div>
                     <div className='app_navbar_user_sub_section_icon'>
-                        <TbMessage2 />
+                        <TbUserBolt />
+                        {notificationCounts["friends_request"] > 0 &&
+                            (
+                                <div className="app_navbar_user_sub_section_icon_note_count">
+                                    {notificationCounts["friends_request"]}
+                                </div>
+                            )
+                        }
                     </div>
-                    <div className='app_navbar_user_sub_section_icon'>
+                    <div onClick={() => setOpenMiniNotify(!openMiniNotify)} className='app_navbar_user_sub_section_icon'>
                         <LuBell />
+                        {notificationCounts["base"] > 0 &&
+                            (
+                                <div className="app_navbar_user_sub_section_icon_note_count">
+                                    {notificationCounts["base"]}
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
             </div>

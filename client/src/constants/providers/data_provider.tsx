@@ -18,14 +18,19 @@ const DataContext = createContext<DataProviderTypes | null>(null);
 
 export const DataProvider = ({ children }: { children: ReactNode }) => {
 
+
     //////////////////// Message List
     const [messagesList, setMessagesList] = useState<MessageList[]>([]);
     const [newMessage, setNewMessage] = useState<boolean>(true);
     //trigger new message on socket event
     useEffect(() => {
-        socket.on("new_message", () => setNewMessage(true));
+
+        const handleNewMessage = () => {
+            setNewMessage(true);
+        }
+        socket.on("new_message", handleNewMessage);
         return () => {
-            socket.off("new_message");
+            socket.off("new_message", handleNewMessage);
         }
     }, [socket])
 
@@ -115,7 +120,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         }
 
     }, [socket]);
-    
+
 
     return (
         <DataContext.Provider value={{

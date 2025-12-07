@@ -107,6 +107,25 @@
 
 .app_navbar_user_sub_section_icon {
     cursor: pointer;
+    position: relative;
+}
+
+.app_navbar_user_sub_section_icon_note_count{
+    position: absolute;
+    top: -0.5rem;
+    right: -0.7rem;
+    font-size: 0.6rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #bb0000;
+    color: #fff;
+    border-radius: 50%;
+    height: 1.2rem;
+    width: 1.2rem;
+    font-weight: 700;
+    font-family: "Space Mono";
 }
 
 .app_navbar_links_container {

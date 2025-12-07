@@ -141,7 +141,16 @@ export const scrollElementToBottom = (obj: RefObject<HTMLElement | null>) => {
 export const defaultNotificationCounts: Record<NotificationCountsIndex, number> = {
   chats: 0,
   calls: 0,
+  base: 0,
+  friends_request: 0
   //alerts: 0,
+}
+
+export const defaultNotificationSettings = {
+  friend_request: true,
+  declined_request: true,
+  accepted_request: true,
+  unfriended: true,
 }
 
 

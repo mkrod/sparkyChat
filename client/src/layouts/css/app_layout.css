@@ -26,6 +26,7 @@
     width: calc(100vw - 15rem);
     min-width: 70%;
     height: 100%;
+    position: relative;
 }
 
 .mobile_app_layout_container{
